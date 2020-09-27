@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+	<title> Bug tracker </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+	</head>
+<div class="container">
+<div class="row">
+
+	<ul class="list-group">
+		 <% for (let i = 0 ; i < usernameobj.length; i++){ %>
+  <li class="list-group-item" style="padding:30px">
+			<div class="col-md-4"><%= usernameobj[i].name %></div>
+			<div class="col-md-4"><%= usernameobj[i].designation %></div>
+			<div class="col-md-4"> <form action="/deleteuser/<%= usernameobj[i]._id%>">
+    <input type="submit" value="DEL" />
+</form>  </div>
+
+	</li>
+	<% } %>
+</ul>
+<form action="/adduser" method="post">
+  <div class="form-group">
+    <input type="text" class="form-control" name="inputusername" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Name">
+  </div>
+  <div class="form-group">
+		<input type="text" class="form-control" name="inputdesignation" id="exampleInputPassword1" placeholder="designation">
+  </div>
+  <button type="submit" name="button" class="btn btn-primary">Add</button>
+</form>
+
+  </div>
+
+</div>
