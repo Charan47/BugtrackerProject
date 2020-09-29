@@ -26,7 +26,7 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
+          <li class="nav-item active">
             <a class="nav-link" href="/listbugs">Home<span class="sr-only">(current)</span></a>
           </li>
 					<li class="nav-item active">
@@ -59,19 +59,16 @@
   </header>
   <div style="" class="container">
 
-    <ul class="list-group">
-			<% for (let i = 0 ; i < buglistobj.length; i++){ %>
-      <li style="padding:0px;border: 1px solid black;"class="list-group-item">
-        <a href="" class="nav-link"><div style="height:50px" class="container">
-          <div style="display:flex;height:100%; align-items: center;" class="row">
-            <div style="text-align: left;height:100%" class="col-3 text-justify"><%=buglistobj[i].nameofthebug%></div>
-            <div style="text-align: left; overflow: hidden;" class="col-8"><%=buglistobj[i].Description%></div>
-            <div class="col-1"><%=buglistobj[i].statusofthebug%></div>
-          </div>
-        </div></a>
-			</li>
-			<% } %>
-    </ul>
+		<ul class="list-group">
+			 <% for (let i = 0 ; i < usernameobj.length; i++){ %>
+		<li class="list-group-item" style="padding:30px">
+				<div class="col-md-4"><%= usernameobj[i].name %></div>
+				<div class="col-md-4"><%= usernameobj[i].designation %></div>
+				<div class="col-md-4"> <form action="/deleteuser/<%= usernameobj[i]._id%>">
+			<input type="submit" value="DEL" /></div>
+		</li>
+		<% } %>
+	</ul>
   </div>
 
 
