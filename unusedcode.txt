@@ -19,7 +19,7 @@
 //Bug model , first parameter is singular from of collections , second prm is shcema
 //	const Bug = mongoose.model("bug",bugSchema);
 
-//Foring new bugs
+//Forming new bugs
 //  	const bug1 = new Bug ({
 // 		nameofthebug: "unloading Bug",
 // 		Description : " wakakaka very slow and dies",

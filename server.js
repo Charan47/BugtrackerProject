@@ -5,16 +5,30 @@
 	//const router 		= require(__dirname + "/routes/index");
 	const app					= express ();
 	const mongoose 		= require("mongoose");
+	const session 		= require("express-session");
+	const passport 		= require("passport");
+	const passportLocalMongoose 		= require("passport-local-mongoose");
+
 
 
 	//const mangoose	= require
+	app.use(express.static("public"));
 	app.set("view engine", "ejs");
 	app.use(bodyParser.urlencoded({extended :true }));
-	app.use(express.static("public"));
+
+	app.use(session({
+		secret : "secretnumber",
+		resave :false,
+		saveUninitialized :false
+	}));
+	app.use(passport.initialize());
+	app.use(passport.session());
+
+
 
 
 //connecting to the database user and also contain bug db
-	mongoose.connect("mongodb://localhost:27017/userdb",{ useNewUrlParser: true, useUnifiedTopology: true });
+	mongoose.connect("mongodb://localhost:27017/userdb",{ useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex :true });
 
 
 
@@ -24,12 +38,26 @@
 		type :String,
 		required : [true , "names is required"]
 	},
+	email : String,
+	password : String,
 	designation: {
 		type: String,
 		enum: ['developer','admin','tester']
 	}
 	});
-	const usermodel = mongoose.model("user",userSchema);
+
+	userSchema.plugin(passportLocalMongoose);
+	const usermodel = new mongoose.model("user",userSchema);
+	passport.use(usermodel.createStrategy());
+	passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  });
+});
 //bugSchema
 	const bugSchema = new mongoose.Schema({
 		nameofthebug: String ,
@@ -42,9 +70,42 @@
 	//adding somebugs to the database
 
 
-	app.get("/home",function(request,response){
-		// response.sendFile(__dirname + "/views/buglist.html");
-	}); //Homepage
+	app.get("/",function(req,res){
+		res.render("home");
+	});
+	app.get("/register",function(req,res){
+		res.render("register",{display:"none"});
+	});
+	app.post("/register",function(req,res){
+		newuser = new usermodel({
+			name: req.body.inputnameoftheuser,
+			email: req.body.inputusername,
+			password:md5(req.body.inputpassword),
+			designation:req.body.designation,
+		});
+		if(req.body.inputusername == {} ){ res.redirect("/register")};
+		usermodel.findOne({email:req.body.inputusername},function(err,foundone){
+
+			if(foundone){
+				res.render("register",{display: "flex"});
+			}else{
+
+				newuser.save();
+				res.redirect("/listbugs");
+			}
+	})
+});
+
+
+
+
+	app.get("/login",function(req,res){
+		res.render("login");
+	});
+
+
+
+
 	app.get("/userlist",function(req,res){
 	//	res.send("HI");
 		usermodel.find({},function(err,userlist){
@@ -73,10 +134,6 @@
 			})
 		 res.redirect("/userlist");
 	});
-
-
-
-
  	app.get('/listbugs',function(req,res){
 		bugmodel.find({},function(err,buglist){
 		 if(!err){
@@ -124,8 +181,8 @@
 // app.get('/deletebug'.function(res,req){
 //
 // });
-	app.listen(3000,function(){
-		console.log("Server has started at 3000");
+	app.listen(4000,function(){
+		console.log("Server has started at 4000");
 	});
 
 
