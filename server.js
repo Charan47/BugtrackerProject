@@ -3,7 +3,7 @@
 	const express 		= require("express");
 	const bodyParser 	= require("body-parser");
 	//const router 		= require(__dirname + "/routes/index");
-	const app		= express ();
+	const app					= express ();
 	const mongoose 		= require("mongoose");
 
 
@@ -11,8 +11,10 @@
 	app.set("view engine", "ejs");
 	app.use(bodyParser.urlencoded({extended :true }));
 	app.use(express.static("public"));
+
+
 //connecting to the database user and also contain bug db
-		mongoose.connect("mongodb://localhost:27017/userdb",{ useNewUrlParser: true, useUnifiedTopology: true });
+	mongoose.connect("mongodb://localhost:27017/userdb",{ useNewUrlParser: true, useUnifiedTopology: true });
 
 
 
@@ -27,114 +29,44 @@
 		enum: ['developer','admin','tester']
 	}
 	});
-
-//creating MODEL connecting the schema to the Collections in DB and assinged it to a database
-// singular version of collection as 1st parameter.
-	const User = mongoose.model("User",userSchema);
-
-// adding new user following the schema of the user
-	const userDev = new User({
-		name : "mrcow",
-		designation : "developer"
-	});
-
-//saving the user data to the database
-//userDev.save();
-
-
-
-
-//Bugschema
+	const usermodel = mongoose.model("user",userSchema);
+//bugSchema
 	const bugSchema = new mongoose.Schema({
 		nameofthebug: String ,
 		Description: String,
 		Assignee : userSchema,
-		statusofthebug : String,
-	});
-//Bug model , first parameter is singular from of collections , second prm is shcema
-	const Bug = mongoose.model("bug",bugSchema);
+		statusofthebug : String,    // not valid (closed), valid to the user, to do ( is only developer) , done , in progress
+	}); 													//valid to notvalid dev had to update.
+	const bugmodel = mongoose.model("bug",bugSchema);
 
-//Foring new bugs
- 	const bug1 = new Bug ({
-		nameofthebug: "unloading Bug",
-		Description : " wakakaka very slow and dies",
-		Assignee : userDev,
-		statusofthebug : "todo"
-	});
-
-	const bug2 = new Bug ({
-		nameofthebug: "Saving Bug",
-		Description : " Saving very slow and dies",
-		Assignee : "dev2",
-		statusofthebug : "todo"
-	});
-
-	const bug3 = new Bug ({
-		nameofthebug: "Buffering Bug",
-		Description : " Buffering very slow and dies",
-		Assignee : "dev1",
-		statusofthebug : "todo"
-	});
-//save them to the database
-
-// 	bug1.save();
-
-//
-//	Bug.insertMany([bug1,bug2,bug3],function(err){
-//	if (err){
-//		console.log("logged error");
-//	}else{
-//		console.log("Successfully save the bugs to bugs collections");
-//	}
-//
-//	});
-
-//Read the DB->Collections->documents Objects
-
-//Read Bugs
-//	Bug.find(function(err,bugs){
-//		if(err){
-//			console.log("logged error at finding");
-//		}else{
-//			bugs.forEach(function(currentvalue){
-//				console.log(currentvalue.nameofthebug);
-//			});
-//		};
-//	});
-// closing the connection
-
-//	mongoose.connection.close()
+	//adding somebugs to the database
 
 
-
-	app.get("/",function(req,res){
-		res.send("HI");
-	});
-
+	app.get("/home",function(request,response){
+		// response.sendFile(__dirname + "/views/buglist.html");
+	}); //Homepage
 	app.get("/userlist",function(req,res){
 	//	res.send("HI");
-		User.find({},function(err,userlist){
+		usermodel.find({},function(err,userlist){
 			if(err){
 				console.log("error while finding users");
 			}else{
-				res.render("test",{usernameobj:userlist});
+				res.render("userlist",{usernameobj:userlist});
 					//res.render("test",{username : currentvalue.name});
 				};
 			})
 		})
-		//	res.render("test",{username: });;
 	app.post("/adduser", function(req,res){
-			const user = new User ({
+			const user = new usermodel ({
 				name : req.body.inputusername,
 				designation: req.body.inputdesignation
 			});
 			user.save();
 			res.redirect("/userlist");
 	});
-
 	app.get('/deleteuser/:userid', function(req,res){
  console.log(req.params.userid);
-			User.findByIdAndRemove(req.params.userid, function(err){
+			usermodel.findByIdAndRemove(req.params.userid, function(err){
 				if(!err){
 					console.log("Successfully deleted user by id");
 				}
@@ -142,6 +74,56 @@
 		 res.redirect("/userlist");
 	});
 
+
+
+
+ 	app.get('/listbugs',function(req,res){
+		bugmodel.find({},function(err,buglist){
+		 if(!err){
+			 res.render("buglist",{buglistobj:buglist});
+		 }
+	 })
+	 });
+	app.get('/showbug/:bugid',function(req,res){
+			bug.findById(req.params.bugid,function(err,bugobj){
+				console.log(bugobj[1]);
+			});
+
+		//res.render('/showbug',{})
+	})
+	app.post("/addbug",function(req,res){
+			const bug = new bugmodel ({
+				nameofthebug : req.body.inputnameofthebug,
+				description : req.body.inputdescription,
+				assignee :req.body.inputdesignation,
+				statusofthebug :req.body.inputstatusofthebug,
+			});
+			bug.save(function(err,savedbug){
+				console.log("Bug Info saved and id is "+ savedbug._id);
+			});
+
+	});
+	// bug.find({},function(err,bugs)){
+	// 	if(err){
+	// 		console.log("logged error finding bugs");
+	// 	}else{
+	// 	}
+	// }
+// app.get('/showbug/:bugid'.function(res,req){
+// bug.findById(req.params.bugid,function(err,bugObj)){
+// 	if(err){
+// 		console.log(err);
+// 	}else{
+// 		res.render("/showbug",{bugobj:bugObj}) // for adding a new bug user is redirected to this again with blank page
+// 	}
+// }
+// });
+// app.post('/savebug'.function(res,req){
+//
+// });
+// app.get('/deletebug'.function(res,req){
+//
+// });
 	app.listen(3000,function(){
 		console.log("Server has started at 3000");
 	});
