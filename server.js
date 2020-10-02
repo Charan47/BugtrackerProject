@@ -8,6 +8,7 @@
 	const session 		= require("express-session");
 	const passport 		= require("passport");
 	const passportLocalMongoose 		= require("passport-local-mongoose");
+	var md5 = require('md5');
 
 
 
@@ -15,17 +16,14 @@
 	app.use(express.static("public"));
 	app.set("view engine", "ejs");
 	app.use(bodyParser.urlencoded({extended :true }));
-
-	app.use(session({
-		secret : "secretnumber",
-		resave :false,
-		saveUninitialized :false
-	}));
-	app.use(passport.initialize());
-	app.use(passport.session());
-
-
-
+	//
+	// app.use(session({
+	// 	secret : "secretnumber",
+	// 	resave :false,
+	// 	saveUninitialized :false
+	// }));
+	// app.use(passport.initialize());
+	// app.use(passport.session());
 
 //connecting to the database user and also contain bug db
 	mongoose.connect("mongodb://localhost:27017/userdb",{ useNewUrlParser: true, useUnifiedTopology: true ,useCreateIndex :true });
@@ -46,18 +44,18 @@
 	}
 	});
 
-	userSchema.plugin(passportLocalMongoose);
+	// userSchema.plugin(passportLocalMongoose);
 	const usermodel = new mongoose.model("user",userSchema);
-	passport.use(usermodel.createStrategy());
-	passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
+// 	// passport.use(usermodel.createStrategy());
+// 	// passport.serializeUser(function(user, done) {
+//   // done(null, user.id);
+// });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
+// passport.deserializeUser(function(id, done) {
+//   User.findById(id, function (err, user) {
+//     done(err, user);
+//   });
+// });
 //bugSchema
 	const bugSchema = new mongoose.Schema({
 		nameofthebug: String ,
