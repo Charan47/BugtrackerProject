@@ -201,11 +201,14 @@
 				}
 			});
 	})
-
 	app.get("/login", function(req, res) {
-	  res.render("login");
+		if(req.isAuthenticated()){
+			res.redirect("/listbugs")
+		}else{
+	  res.render("login");}
 	});
 	app.post("/login", function(req, res) {
+
 		const user = new usermodel({
 			// fields cant be empty while calling or assigning
 			name: {},
@@ -229,7 +232,6 @@
 			}
 		});
 	});
-
 	app.get("/logout",function(res,req){
 		req.logut();
 		req.redirect("/");
@@ -237,7 +239,6 @@
 
 
 	// userlist
-
 	app.get("/userlist", function(req, res) {
 	  //	res.send("HI");
 	  usermodel.find({}, function(err, userlist) {
@@ -268,6 +269,8 @@
 	  })
 	  res.redirect("/userlist");
 	});
+
+
 
 	// bug list
 	app.get('/listbugs', function(req, res) {
