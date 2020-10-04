@@ -1,31 +1,31 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
-<div class="d-flex p-2 bd-highlight">I'm a flexbox container!</div>
+<!-- <div class="d-flex p-2 bd-highlight">I'm a flexbox container!</div>
 
-<div class="d-inline-flex p-2 bd-highlight">I'm asdasdasdasdasdan inline flexbox container!</div>
+<div class="d-inline-flex p-2 bd-highlight">I'm asdasdasdasdasdan inline flexbox container!</div> -->
 
 <div style="width:70%" class="container-fluid">
 
   <ul id="buglist" class="text-wrap bugitem list-group">
-    <li style="padding:0px; border: 1px solid black;" class=" list-group-item">
+    <li id="buglisthead"style="padding:0px; border: 1px solid black;" class=" list-group-item">
         <div style="display:flex;height:100%; align-items: center;" class="">
           <div style="height:100%" class="col-4 text-left">Bug Name</div>
           <div style="height:100%;overflow: hidden;" class="col-6 text-center">Description</div>
-          <div style="height:100%;padding:2px" class="col-2 text-right">Status</div>
+          <div style="height:100%;padding:2px" class="col-2 text-center">Status</div>
         </div>
   </li>
     <% for (let i = 0 ; i < buglistobj.length; i++){ %>
 
-    <li style="padding:0px; border: 1px solid black;" class=" list-group-item">
-      <a href="" style="padding:0px;height:100" class="  container nav-link">
+    <a href="/showbug/<%=buglistobj[i]._id%>" style="padding:0px; border: 1px solid black;" class=" list-group-item">
+      <li  style="padding:0px;height:100" class="  container nav-link">
           <div style="display:flex;height:100%; align-items: center;" class="">
             <div style="height:100%" class="col-4 text-left"><%=buglistobj[i].nameofthebug%></div>
             <div style="height:100%; overflow: hidden;" class="col-6 text-center"><%=buglistobj[i].Description%></div>
-            <div style="height:100%;padding:2px" class="col-2 text-right"><%=buglistobj[i].statusofthebug%></div>
+            <div style="height:100%;padding:2px" class="col-2 text-center"><%=buglistobj[i].statusofthebug%></div>
           </div>
-      </a>
-    </li>
+      </li>
+    </a>
     <% } %>
   </ul>
 </div>

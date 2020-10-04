@@ -57,7 +57,7 @@
 	  password: String,
 	  designation: {
 	    type: String,
-	    enum: ['developer', 'admin', 'tester']
+	    enum: ['developer', 'admin', 'tester','default']
 	  }
 	});
 //pluging in local mongoose for hashing salt and save users
@@ -107,6 +107,7 @@
 	    display: "none"
 	  });
 	});
+
 
 	// register method without local-mongoose
 	//  app.post("/register", function(req, res) {
@@ -182,6 +183,7 @@
 	//   //res.redirect("/listbugs");
 	// });
 
+
 	app.post("/register",function(req,res){
 			//method from passportlocalmongoose
 			// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
@@ -232,10 +234,11 @@
 			}
 		});
 	});
-	app.get("/logout",function(res,req){
-		req.logut();
-		req.redirect("/");
-	})
+	app.get("/logout",function(req,res){
+		req.logout();
+		res.redirect('/');
+	});
+
 
 
 	// userlist
@@ -293,23 +296,50 @@
 
 
 	});
-	app.get('/showbug/:bugid', function(req, res) {
-	  bug.findById(req.params.bugid, function(err, bugobj) {
-	    console.log(bugobj[1]);
-	  });
+	app.get('/addbug',function(req,res){
 
+				res.render("addbug")
+	});
+	app.post('/updatebug',function(req,res){
+		res.render("showbug")
+	});
+
+	app.get('/showbug/:bugid', function(req, res) {
+      bugmodel.findById(req.params.bugid, function(err, bugobj) {
+        res.render("showbug",{bugobj});
+      });
 	  //res.render('/showbug',{})
 	})
-	app.post("/addbug", function(req, res) {
-	  const bug = new bugmodel({
-	    nameofthebug: req.body.inputnameofthebug,
-	    description: req.body.inputdescription,
-	    assignee: req.body.inputdesignation,
-	    statusofthebug: req.body.inputstatusofthebug,
-	  });
-	  bug.save(function(err, savedbug) {
-	    console.log("Bug Info saved and id is " + savedbug._id);
-	  });
+	app.post("/savebug", function(req, res) {
+		console.log(req.body);
+		const{bugname,description,action} = req.body;
+
+
+		if(action == 'save'){
+			const user = new usermodel({
+				name : "default",
+				email : '',
+				designation:'',
+				password:'',
+			})
+			const bug = new bugmodel({
+				nameofthebug : bugname,
+				Description : description,
+				Assignee : user,
+				statusofthebug : "tobe"
+			});
+			console.log(bug.Assignee);
+			bug.save(function(err,savedbug){
+					console.log(savedbug._id);
+			})
+		}
+
+
+		//const {nameofthebug, Description}= req.body;
+	  // bug.save(function(err, savedbug) {
+	  //   console.log("Bug Info saved and id is " + savedbug._id);
+		// 	res.redirect('/listbugs');
+	  // });
 
 	});
 	// bug.find({},function(err,bugs)){
