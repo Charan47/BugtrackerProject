@@ -5,19 +5,16 @@
 	//const router 		= require(__dirname + "/routes/index");
 
 	const mongoose = require("mongoose");
+
 	const session = require("express-session");
 	const passport = require("passport");
 	const passportLocalMongoose = require("passport-local-mongoose");
+
 	const bcrypt = require("bcrypt");
 	const flash = require("connect-flash")
 	const app = express();
 
-	//connecting to the database user and also contain bug db
-	mongoose.connect("mongodb://localhost:27017/userdb", {
-	  useNewUrlParser: true,
-	  useUnifiedTopology: true,
-	  useCreateIndex: true
-	});
+
 
 	// EJS
 	app.use(express.static("public"));
@@ -35,63 +32,68 @@
 		saveUninitialized :true
 	}));
 
-	//connect flash
-	app.use(flash());
+	app.use(passport.initialize());
+ 	app.use(passport.session());
 
-	//Global Var
+	//connecting to the database user and also contain bug db
+	mongoose.connect("mongodb://localhost:27017/userdb", {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useCreateIndex: true
+	});
+	//connect flash
+	{app.use(flash());
+	//Global Var for "flash"
 	app.use(function(req,res,next){
 		res.locals.success_msg = req.flash('success_msg');
 		res.locals.error_msg = req.flash('error_msg');
 		next();
-	});
+	});}
 
-	// app.use(passport.initialize());
-	// app.use(passport.session());
-
-
-
-
-
-	// userSchema
+// userSchema
 	const userSchema = new mongoose.Schema({
-	  name: {
-	    type: String,
-	    required: true
-	  },
-	  email: {
-	    type: String,
-	    required: true
-	  },
-	  password: {
-	    type: String,
-	    required: true
-	  },
+	  name: String,
+	  email: String,
+	  password: String,
 	  designation: {
 	    type: String,
-	    required: true,
 	    enum: ['developer', 'admin', 'tester']
 	  }
 	});
+//pluging in local mongoose for hashing salt and save users
+	userSchema.plugin(passportLocalMongoose,{usernameField :'email'});
 
-	// userSchema.plugin(passportLocalMongoose);
 	const usermodel = new mongoose.model("user", userSchema);
-	// 	// passport.use(usermodel.createStrategy());
-	// 	// passport.serializeUser(function(user, done) {
-	//   // done(null, user.id);
-	// });
+// 	if i had been using passport and passport local
+//	we had been defining serial and deserialing as
+//	in passport documentation
+{
+	// 	passport.serializeUser(function(user, done) {
+//   done(null, user.id);
+// });
+//
+// passport.deserializeUser(function(id, done) {
+//   User.findById(id, function (err, user) {
+//     done(err, user);
+//   });
+// });
+}
 
-	// passport.deserializeUser(function(id, done) {
-	//   User.findById(id, function (err, user) {
-	//     done(err, user);
-	//   });
-	// });
+// creates local strategy from createstrategy
+// and  also usgin local mongoose to take care of beloew three lines
+	passport.use(usermodel.createStrategy());
+	passport.serializeUser(usermodel.serializeUser());
+	passport.deserializeUser(usermodel.deserializeUser());
+
 	//bugSchema
 	const bugSchema = new mongoose.Schema({
 	  nameofthebug: String,
 	  Description: String,
 	  Assignee: userSchema,
 	  statusofthebug: String, // not valid (closed), valid to the user, to do ( is only developer) , done , in progress
-	}); //valid to notvalid dev had to update.
+	});
+
+	//valid to notvalid dev had to update.
 	const bugmodel = mongoose.model("bug", bugSchema);
 
 	//adding somebugs to the database
@@ -106,85 +108,132 @@
 	  });
 	});
 
-	app.post("/register", function(req, res) {
-	  console.log(req.body);
-	  const {
-	    name,
-	    designation,
-	    email,
-	    password
-	  } = req.body;
-	  console.log(email);
-	  let errors = [];
+	// register method without local-mongoose
+	//  app.post("/register", function(req, res) {
+	//   console.log(req.body);
+	//   const {
+	//     name,
+	//     designation,
+	//     email,
+	//     password
+	//   } = req.body;
+	//   console.log(email);
+	//   let errors = [];
+	//
+	//   //check required fields
+	//   if (!name || !designation || !email || !password) {
+	//     errors.push({
+	//       msg: 'Please fill in all fields'
+	//     });
+	//
+	//     console.log(errors);
+	//     res.render("register", {
+	//       errors,
+	//       name,
+	//       designation,
+	//       email
+	//     });
+	//   } else {
+	//     console.log("checking");
+	//     usermodel.findOne({
+	//       email: email
+	//     }, (function(err, user) {
+	//       console.log(email + user);
+	//       if (user) {
+	//         errors.push({
+	//           msg: " Email already exists !!"
+	//         })
+	//         console.log(errors);
+	//         res.render('register', {
+	//           errors,
+	//           name,
+	//           designation,
+	//           email
+	//         })
+	//       } else {
+	//         const newuser = new usermodel({
+	//           name,
+	//           designation,
+	//           email,
+	//           password,
+	//         });
+	//         bcrypt.hash(newuser.password, 10, function(err, hash) {
+	//           // Store hash in your password DB.
+	//           if (err) throw err;
+	//           //set password to hashed
+	//           newuser.password = hash;
+	//           //save user
+	// 					console.log(newuser);
+	//           newuser.save(function(err) {
+	//             if (err) {
+	//               console.log(err);
+	//             }else{
+	// 							req.flash('success_msg','You are now registered and login now !!' );
+	// 							res.redirect('/login');
+	// 						}
+	//           });
+	//
+	//         });
+	//       }
+	//     }));
+	//   }
+	//
+	//   //newuser.save();
+	//   //res.redirect("/listbugs");
+	// });
 
-	  //check required fields
-	  if (!name || !designation || !email || !password) {
-	    errors.push({
-	      msg: 'Please fill in all fields'
-	    });
-
-	    console.log(errors);
-	    res.render("register", {
-	      errors,
-	      name,
-	      designation,
-	      email
-	    });
-	  } else {
-	    console.log("checking");
-	    usermodel.findOne({
-	      email: email
-	    }, (function(err, user) {
-	      console.log(email + user);
-	      if (user) {
-	        errors.push({
-	          msg: " email already exits"
-	        })
-	        console.log(errors);
-	        res.render('register', {
-	          errors,
-	          name,
-	          designation,
-	          email
-	        })
-	      } else {
-	        const newuser = new usermodel({
-	          name,
-	          designation,
-	          email,
-	          password,
-	        });
-	        bcrypt.hash(newuser.password, 10, function(err, hash) {
-	          // Store hash in your password DB.
-	          if (err) throw err;
-	          //set password to hashed
-	          newuser.password = hash;
-	          //save user
-						console.log(newuser);
-	          newuser.save(function(err) {
-	            if (err) {
-	              console.log(err);
-	            }else{
-								req.flash('success_msg','You are now registered and login' );
-								res.redirect('/login');
-							}
-	          });
-
-	        });
-	      }
-	    }));
-	  }
-
-	  //newuser.save();
-	  //res.redirect("/listbugs");
-	});
-
-
-
+	app.post("/register",function(req,res){
+			//method from passportlocalmongoose
+			// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
+			console.log(req.body);
+			const user = new usermodel(req.body)
+			console.log(user);
+			usermodel.register(user,req.body.password,function(err,user){
+				if(err){
+					console.log(err);
+					res.redirect("/register");
+				}else{
+					//type of authentication we performing is local mentioned in the brackets
+					//call back function is called only if the authentication is successful
+					passport.authenticate("local")(req,res,function(){
+						res.redirect("/listbugs")
+					});
+				}
+			});
+	})
 
 	app.get("/login", function(req, res) {
 	  res.render("login");
 	});
+	app.post("/login", function(req, res) {
+		const user = new usermodel({
+			// fields cant be empty while calling or assigning
+			name: {},
+			description :{},
+			email : req.body.email,
+			password : req.body.password
+		});
+
+		//method from passport
+		req.login(user,function(err){
+			if(err){
+				console.log(err);
+				//include flash message here
+				res.redirect('/login');
+			}else{
+				// tells browser to hold on the cookie when this is called after login or register
+				passport.authenticate("local")(req,res,function(){
+
+					res.redirect("/listbugs")
+				});
+			}
+		});
+	});
+
+	app.get("/logout",function(res,req){
+		req.logut();
+		req.redirect("/");
+	})
 
 
 	// userlist
@@ -222,13 +271,24 @@
 
 	// bug list
 	app.get('/listbugs', function(req, res) {
-	  bugmodel.find({}, function(err, buglist) {
-	    if (!err) {
-	      res.render("buglist", {
-	        buglistobj: buglist
-	      });
-	    }
-	  })
+		// here isAuthenticated method depends on
+		//1.passport,
+		//2.passport local ,
+		//3.passport local mongoose ,
+		//4.session
+		if(req.isAuthenticated()){
+			bugmodel.find({}, function(err, buglist) {
+		    if (!err) {
+		      res.render("buglist", {
+		        buglistobj: buglist
+		      });
+		    }
+		  })
+		}else{
+			res.redirect('/login');
+		}
+
+
 	});
 	app.get('/showbug/:bugid', function(req, res) {
 	  bug.findById(req.params.bugid, function(err, bugobj) {
