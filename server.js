@@ -329,6 +329,11 @@
       });
 	  //res.render('/showbug',{})
 	})
+
+	app.get("/addbug",function(req,res){
+		const bugobj = {nameofthebug:'',description:'',_id:''};
+		res.render("showbug",{bugobj});
+	})
 	app.post("/savebug", function(req, res) {
 		console.log(req.body);
 		const{bugname,description,action} = req.body;
