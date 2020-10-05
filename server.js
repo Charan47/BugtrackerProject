@@ -47,6 +47,7 @@
 	app.use(function(req,res,next){
 		res.locals.success_msg = req.flash('success_msg');
 		res.locals.error_msg = req.flash('error_msg');
+		res.locals.updated_msg = req.flash('updated_msg');
 		next();
 	});
 
@@ -195,6 +196,7 @@
 			usermodel.register(user,req.body.password,function(err,user){
 				if(err){
 					console.log(err);
+
 					res.redirect("/register");
 				}else{
 					//type of authentication we performing is local mentioned in the brackets
@@ -213,9 +215,6 @@
 	  res.render("login");}
 	});
 
-
-
-
 	app.post("/login", function(req, res,next) {
 		passport.authenticate('local', function(err, user, info) {
 		    if (err) {
@@ -233,19 +232,10 @@
 		  })(req, res, next);
 	});
 
-
-	app.post("/login",passport.authenticate("local",{
-		successRedirect:"/listbugs", failureRediect : "/login",
-	}),function(req,res){
-
-	});
-
 	app.get("/logout",function(req,res){
 		req.logout();
 		res.redirect('/');
 	});
-
-
 
 	// userlist
 	app.get("/userlist", function(req, res) {
@@ -302,13 +292,36 @@
 
 
 	});
-	app.get('/addbug',function(req,res){
+	app.post('/editbug/:bugid',function(req,res){
+		console.log(req.body);
+		if(req.body.action == 'save'){
+			const bug = new bugmodel({
+				nameofthebug : 	req.body.bugname,
+				Description  : req.body.description,
+				statusofthebug : "tobe" //new bug status is always to be
+			});
+			bug.save(function(err,savedbug){
+					console.log(savedbug._id);
+					req.flash('success_msg','Saved as New Bug');
+					res.redirect("/showbug/"+savedbug._id);
+			})
+			//updating with findByIdAndUpdate
+		}else if (req.body.action == 'update') {
+			console.log(req.params.bugid);
+			bugmodel.findByIdAndUpdate(req.params.bugid,{
+				nameofthebug: req.body.bugname,
+				Description : req.body.description,
+			},function(err,updatedbug){
+				if(!err){
+					console.log(updatedbug);
+					req.flash('updated_msg','Updated the Bug');
+					console.log("updated Bug"+updatedbug._id);
+					res.redirect("/showbug/"+updatedbug._id);
+				}
+			})
+		};
+	});
 
-				res.render("addbug")
-	});
-	app.post('/updatebug',function(req,res){
-		res.render("showbug")
-	});
 
 	app.get('/showbug/:bugid', function(req, res) {
       bugmodel.findById(req.params.bugid, function(err, bugobj) {
