@@ -3,40 +3,32 @@
 <div style="width:70%" class="container-fluid">
   <div class="card">
     <div class="card-body">
-      <form>
+      <form method="post">
         <div class="form-group">
-
-          <label for="bugname"> Bugname  </label>
-          <input
-          type="text"
-          class="form-control"
-          name="bugname"
-          id="inputbugname"
-          placeholder=""
-          value="<%= typeof bugobj.nameofthebug != "undefined" ? bugobj.nameofthebug :''%>  (<%=bugobj._id%>)">
+          <%- include('partials/msgs') %>
+          <label class="d-block" for="bugname"> Bug Title </label>
+          <input type="text" class="form-control" name="bugname" id="inputbugname" placeholder="" value="<%= typeof bugobj.nameofthebug != "undefined" ? bugobj.nameofthebug :''%> ">
         </div>
         <div class="form-group">
           <label class="d-block" for="description"> Description</label>
-          <textarea
-            type="text"
-            class="d-block"
-            style="height:200px;width:100%"
-            id=inputdescription class"form-control"
-            name="description"
-            placeholder="">
-            <%= typeof bugobj.Description != 'undefined' ? bugobj.Description : {} %>
-
-        </textarea>
+          <textarea type="text" class="d-block" style="height:200px;width:100%" id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.Description != 'undefined' ? bugobj.Description : '' %></textarea>
         </div>
-          <button type="submit" formaction="/addbug"class="btn btn-primary">save as new</button>
+        <div class="form-group">
+          <label class="d-block" for="bugid"> Bug Id </label>
+          <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id="bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" >
+        </div>
+        <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-primary">save as new</button>
 
-          <button type="submit" formaction="/updatebug"class="btn btn-primary">update</button>
-
+        <% if(bugobj._id !='') { %>
+        <button type="submit" name="action" value="update" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">update</button>
+        <%}%>
       </form>
     </div>
   </div>
+</div>
 
 
 
 
-  <%- include('partials/footer') %>
+
+<%- include('partials/footer') %>
