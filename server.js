@@ -42,19 +42,18 @@
 		useCreateIndex: true
 	});
 	//connect flash
-	{app.use(flash());
+	app.use(flash());
 	//Global Var for "flash"
 	app.use(function(req,res,next){
 		res.locals.success_msg = req.flash('success_msg');
 		res.locals.error_msg = req.flash('error_msg');
 		next();
-	});}
+	});
 
 // userSchema
 	const userSchema = new mongoose.Schema({
 	  name: String,
 	  email: String,
-	  password: String,
 	  designation: {
 	    type: String,
 	    enum: ['developer', 'admin', 'tester','default']
@@ -103,13 +102,11 @@
 	  res.render("home");
 	});
 	app.get("/register", function(req, res) {
-	  res.render("register", {
-	    display: "none"
-	  });
+	  res.render("register");
 	});
 
 
-	// register method without local-mongoose
+{	// register method without local-mongoose
 	//  app.post("/register", function(req, res) {
 	//   console.log(req.body);
 	//   const {
@@ -182,13 +179,18 @@
 	//   //newuser.save();
 	//   //res.redirect("/listbugs");
 	// });
+}
 
 
 	app.post("/register",function(req,res){
 			//method from passportlocalmongoose
 			// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
 			console.log(req.body);
-			const user = new usermodel(req.body)
+			const user = new usermodel({
+				name:req.body.name,
+				email:req.body.email,
+				designation:req.body.designation,
+			});
 			console.log(user);
 			usermodel.register(user,req.body.password,function(err,user){
 				if(err){
@@ -203,37 +205,41 @@
 				}
 			});
 	})
+
 	app.get("/login", function(req, res) {
 		if(req.isAuthenticated()){
 			res.redirect("/listbugs")
 		}else{
 	  res.render("login");}
 	});
-	app.post("/login", function(req, res) {
 
-		const user = new usermodel({
-			// fields cant be empty while calling or assigning
-			name: {},
-			description :{},
-			email : req.body.email,
-			password : req.body.password
-		});
 
-		//method from passport
-		req.login(user,function(err){
-			if(err){
-				console.log(err);
-				//include flash message here
-				res.redirect('/login');
-			}else{
-				// tells browser to hold on the cookie when this is called after login or register
-				passport.authenticate("local")(req,res,function(){
 
-					res.redirect("/listbugs")
-				});
-			}
-		});
+
+	app.post("/login", function(req, res,next) {
+		passport.authenticate('local', function(err, user, info) {
+		    if (err) {
+				return next(err);
+			 }
+		    if (!user) {
+					req.flash('error_msg','Wrong Credintials Entered !!' );
+					return res.redirect('/login');
+				}
+
+		    req.logIn(user, function(err) {
+		      if (err) { return next(err); }
+		      return res.redirect('/listbugs');
+		    });
+		  })(req, res, next);
 	});
+
+
+	app.post("/login",passport.authenticate("local",{
+		successRedirect:"/listbugs", failureRediect : "/login",
+	}),function(req,res){
+
+	});
+
 	app.get("/logout",function(req,res){
 		req.logout();
 		res.redirect('/');
