@@ -11,12 +11,41 @@
         </div>
         <div class="form-group">
           <label class="d-block" for="description"> Description</label>
-          <textarea type="text" class="d-block" style="height:200px;width:100%" id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.Description != 'undefined' ? bugobj.Description : '' %></textarea>
+          <textarea type="text" class="d-block" style="height:200px;width:100%" id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.description != 'undefined' ? bugobj.description : '' %></textarea>
         </div>
-        <div class="form-group">
-          <label class="d-block" for="bugid"> Bug Id </label>
-          <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id="bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" >
+
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label class="d-block" for="bugid"> Bug Id </label>
+              <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id=" bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>">
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="form-group">
+              <label class="d-block" for="assignee"> Assignee</label>
+              <div class="wrapper">
+                <select
+                style="width:225px"
+                onfocus="this.size=10"
+                onblur="this.size=1"
+                onchange="this.size=1"
+                type="text"
+                class="d-inline form-control"
+                id="assignee"
+                name="assignee"
+                value="<%=typeof bugobj.assignee !='undefined' ? bugobj.assignee : ''%>">
+                <% devs.forEach((dev, i) => { %>
+                  <option value="<%=dev._id%>"><%=dev.name%></option>
+                <%});%>
+
+
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
+
         <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-primary">save as new</button>
 
         <% if(bugobj._id !='') { %>
