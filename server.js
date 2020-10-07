@@ -39,7 +39,8 @@
 	mongoose.connect("mongodb://localhost:27017/userdb", {
 	  useNewUrlParser: true,
 	  useUnifiedTopology: true,
-	  useCreateIndex: true
+	  useCreateIndex: true,
+		useFindAndModify: false
 	});
 	//connect flash
 	app.use(flash());
@@ -337,29 +338,38 @@
 	});
 	// showing bug in detail version
 	app.get('/showbug/:bugid', function(req, res) {
-	  usermodel.find({}, (function(err, users) {
-	          bugmodel.findById(req.params.bugid, function(err, bugobj) {
-	            res.render("showbug", {
-	              bugobj,
-	              devs: users
-	            });
-	          });
-	      }));
-	  });
-
+  	usermodel.find({}, (function(err, users) {
+			bugmodel.findById(req.params.bugid, function(err, bugobj) {
+				usermodel.find({
+					'_id' : {
+						$in : bugobj.assignee
+					}
+				},function(err,assignees){
+					console.log(assignees);
+					res.render("showbug", {
+						bugobj,
+						devs: users,
+						assingeddev : assignees
+					})
+				});
+			});
+		}));
+});
 
 	//from the button beside to home button
 	app.get("/addbug", function(req, res) {
-	  res.render("showbug", {
-	    bugobj: ''
-	  });
-	})
+		usermodel.find({}, (function(err, users){
+ 						 res.render("showbug", {
+ 							 bugobj:{},
+ 							 devs: users
+ 						 });
+
+ 			 }));
+ 	 });
 
 	//saving and updating bug
 	app.post('/editbug/:bugid', function(req, res) {
-	  console.log(req.body);
-
-	  if (req.body.action == 'save') {
+		if (req.body.action == 'save') {
 	    const bug = new bugmodel({
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
@@ -372,11 +382,14 @@
 	    })
 	    //updating with findByIdAndUpdate
 	  } else if (req.body.action == 'update') {
-	    //console.log(req.params.bugid);
 			console.log(req.body);
+	    console.log(req.params.bugid);
 	    bugmodel.findByIdAndUpdate(req.params.bugid, {
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
+				$push:{
+					assignee:req.body.assignee,
+				},
 	    }, function(err, updatedbug) {
 	      if (!err) {
 	        console.log(updatedbug);

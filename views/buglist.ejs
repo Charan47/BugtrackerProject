@@ -10,7 +10,7 @@
   <ul id="buglist" class="text-wrap bugitem list-group">
     <li id="buglisthead"style="padding:0px; border: 1px solid black;" class=" list-group-item">
         <div style="display:flex;height:100%; align-items: center;" class="">
-          <div style="height:100%" class="col-4 text-center">Bug Title</div>
+          <div style="height:100%" class="col-3 text-center">Bug Title</div>
           <div style="height:100%;overflow: hidden;" class="col-6 text-center">Description</div>
           <div style="height:100%;padding:2px" class="col-2 text-left">Status</div>
         </div>
@@ -18,10 +18,10 @@
     <% for (let i = 0 ; i < buglistobj.length; i++){ %>
 
     <a href="/showbug/<%=buglistobj[i]._id%>" style="padding:0px; border: 1px solid black;" class=" list-group-item">
-      <li  style="padding:0px;height:100" class="  container nav-link">
+      <li  style="padding:0px;" class="  container nav-link">
           <div style="display:flex;height:100%; align-items: center;" class="">
-            <div style="height:100%" class="col-4 text-left"><%=buglistobj[i].nameofthebug%></div>
-            <div style="height:100%; overflow: hidden;text-overflow: ellipsis; overflow: hidden;" class="col-6 text-center"><%=buglistobj[i].description%></div>
+            <div style="height:100% ; border-right: 1px solid black" class="col-3 text-left"><%=buglistobj[i].nameofthebug%></div>
+            <div style="height:100%; white-space:nowrap ;text-overflow: ellipsis; overflow: hidden;" class="col-6 text-center"><%=buglistobj[i].description%></div>
             <div style="height:100%;padding:2px" class="col-2 text-center"><%=buglistobj[i].statusofthebug%></div>
           </div>
       </li>

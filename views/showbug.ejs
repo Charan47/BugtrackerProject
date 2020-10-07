@@ -15,16 +15,18 @@
         </div>
 
         <div class="row">
-          <div class="col-6">
+          <div class="col-4">
             <div class="form-group">
               <label class="d-block" for="bugid"> Bug Id </label>
               <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id=" bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>">
             </div>
           </div>
-          <div class="col-5">
+          <div class="col-4">
             <div class="form-group">
               <label class="d-block" for="assignee"> Assignee</label>
+              <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id=" assigneename" name="assigneename" value="<%=typeof assingeddev[0].name !='undefined' ? assingeddev[0].name: ''%>">
               <div class="wrapper">
+
                 <select
                 style="width:225px"
                 onfocus="this.size=10"
@@ -34,14 +36,19 @@
                 class="d-inline form-control"
                 id="assignee"
                 name="assignee"
-                value="<%=typeof bugobj.assignee !='undefined' ? bugobj.assignee : ''%>">
+                value="">
+                <option <%=typeof bugobj.assignee !='undefined' ? bugobj.assignee : ''%></option>
                 <% devs.forEach((dev, i) => { %>
-                  <option value="<%=dev._id%>"><%=dev.name%></option>
+                  <option  name="assigneeid" value="<%=dev._id%>"><%=dev.name%></option>
                 <%});%>
-
-
                 </select>
               </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label class="d-block" for="bugstatus"> Bug Status</label>
+              <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id=" bugid" name="bugstatus" value="<%=typeof bugobj.statusofthebug !='undefined' ? bugobj.statusofthebug: ''%>">
             </div>
           </div>
         </div>
