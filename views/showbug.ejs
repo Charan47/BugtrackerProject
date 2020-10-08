@@ -24,9 +24,15 @@
           <div class="col-4">
             <div class="form-group">
               <label class="d-block" for="assignee"> Assignee</label>
-              <input style="width:225px" type="text" class="d-inline form-control" readonly="readonly id=" assigneename" name="assigneename" value="<%=typeof assingeddev[0].name !='undefined' ? assingeddev[0].name: ''%>">
+              <% assigneddev.forEach((assigneddev,i)=>{ %>
+              <input style="width:100%"
+              type="text"
+              class="d-inline form-control"
+              readonly="readonly id="
+              assigneename="assigneename"
+              value="<%=typeof assigneddev !='undefined' ? assigneddev.name : ''%>">
+              <%})%>
               <div class="wrapper">
-
                 <select
                 style="width:225px"
                 onfocus="this.size=10"
@@ -37,7 +43,7 @@
                 id="assignee"
                 name="assignee"
                 value="">
-                <option <%=typeof bugobj.assignee !='undefined' ? bugobj.assignee : ''%></option>
+                <option <%=typeof bugobj.assignee !='undefined' ? bugobj.assignee : 'undefined'%></option>
                 <% devs.forEach((dev, i) => { %>
                   <option  name="assigneeid" value="<%=dev._id%>"><%=dev.name%></option>
                 <%});%>

@@ -346,10 +346,15 @@
 					}
 				},function(err,assignees){
 					console.log(assignees);
+					const assigneddev = [];
+					assignees.forEach((assingee, i) => {
+						assigneddev.push({name :assingee.name,_id:assingee._id});
+					});
+					console.log(assigneddev);
 					res.render("showbug", {
 						bugobj,
 						devs: users,
-						assingeddev : assignees
+						assigneddev ,
 					})
 				});
 			});
