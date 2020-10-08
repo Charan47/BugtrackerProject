@@ -366,7 +366,8 @@
 		usermodel.find({}, (function(err, users){
  						 res.render("showbug", {
  							 bugobj:{},
- 							 devs: users
+ 							 devs: users,
+							 assingeddev: '',
  						 });
 
  			 }));
@@ -394,7 +395,7 @@
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
 				$push:{
-					assignee: req.body.assignee== '' ? null : req.body.assignee 
+					assignee: req.body.assignee== '' ? null : req.body.assignee
 				},
 	    }, function(err, updatedbug) {
 				console.log(err);
