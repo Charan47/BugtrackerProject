@@ -389,14 +389,16 @@
 	  } else if (req.body.action == 'update') {
 			console.log(req.body);
 	    console.log(req.params.bugid);
+			req.body.assingee
 	    bugmodel.findByIdAndUpdate(req.params.bugid, {
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
 				$push:{
-					assignee:req.body.assignee,
+					assignee: req.body.assignee== '' ? null : req.body.assignee 
 				},
 	    }, function(err, updatedbug) {
-	      if (!err) {
+				console.log(err);
+				if (!err) {
 	        console.log(updatedbug);
 	        req.flash('updated_msg', 'Updated the Bug');
 	        console.log("updated Bug" + updatedbug._id);
