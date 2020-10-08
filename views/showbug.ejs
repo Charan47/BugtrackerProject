@@ -24,14 +24,15 @@
           <div class="col-4">
             <div class="form-group">
               <label class="d-block" for="assignee"> Assignee</label>
-              <% assigneddev.forEach((assigneddev,i)=>{ %>
+              <% if (typeof assigneddev != 'undefined'){
+              assigneddev.forEach((assigneddev,i)=>{ %>
               <input style="width:100%"
               type="text"
               class="d-inline form-control"
               readonly="readonly id="
               assigneename="assigneename"
               value="<%=typeof assigneddev !='undefined' ? assigneddev.name : ''%>">
-              <%})%>
+              <%})}%>
               <div class="wrapper">
                 <select
                 style="width:225px"
@@ -61,7 +62,7 @@
 
         <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-primary">save as new</button>
 
-        <% if(bugobj._id !='') { %>
+        <% if(typeof bugobj._id !='undefined') { %>
         <button type="submit" name="action" value="update" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">update</button>
         <%}%>
       </form>
