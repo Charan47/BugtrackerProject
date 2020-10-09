@@ -35,6 +35,12 @@
 	app.use(passport.initialize());
 	app.use(passport.session());
 
+	function authenticate(req,res,next){
+		if (!req.isAuthenticated()) {
+	    res.render("login");
+	  };
+		next();
+	}
 	//connecting to the database user and also contain bug db
 	mongoose.connect("mongodb://localhost:27017/userdb", {
 	  useNewUrlParser: true,
@@ -60,7 +66,7 @@
 	    developer: Boolean,
 	    admin: Boolean,
 	  },
-	  bugsassingedto: [{
+	  bugsassignedto: [{
 	    type: mongoose.SchemaTypes.ObjectId,
 	    ref: 'bugmodel'
 	  }],
@@ -104,18 +110,15 @@
 	  }],
 	  statusofthebug: String, // not valid (closed), valid to the user, to do ( is only developer) , done , in progress
 	});
-
 	//valid to notvalid dev had to update.
 	const bugmodel = new mongoose.model("bug", bugSchema);
 
-
 	app.get("/", function(req, res) {
-	  res.render("home");
+	  res.render("postlogingregister");
 	});
 	app.get("/register", function(req, res) {
 	  res.render("register");
 	});
-
 
 	{ // register method without local-mongoose
 	  //  app.post("/register", function(req, res) {
@@ -191,8 +194,6 @@
 	  //   //res.redirect("/listbugs");
 	  // });
 	}
-
-
 	app.post("/register", function(req, res) {
 	  const {
 	    name,
@@ -241,22 +242,17 @@
 
 	  }
 	});
-
-
 	//method from passportlocalmongoose
 	// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
 
-
-
-
 	app.get("/login", function(req, res) {
 	  if (req.isAuthenticated()) {
-	    res.redirect("/listbugs")
-	  } else {
+			res.redirect("/listbugs")
+		}else{
 	    res.render("login");
 	  }
-	});
 
+	});
 	app.post("/login", function(req, res, next) {
 	  passport.authenticate('local', function(err, user, info) {
 	    if (err) {
@@ -275,34 +271,150 @@
 	    });
 	  })(req, res, next);
 	});
-
 	app.get("/logout", function(req, res) {
 	  req.logout();
 	  res.redirect('/');
 	});
 
+// authenticate all routes from below
+	app.use((req,res,next)=>{
+		if(req.isAuthenticated()){
+			next();
+		}else{
+			res.redirect('/login');
+		}
+	});
 	// userlist
 	app.get("/userlist", function(req, res) {
 	  //	res.send("HI");
+		if(req.user.designation.admin){
 	  usermodel.find({}, function(err, userlist) {
 	    if (err) {
 	      console.log("error while finding users");
 	    } else {
 	      res.render("userlist", {
-	        usernameobj: userlist
+	        userobj: userlist
 	      });
+
 	      //res.render("test",{username : currentvalue.name});
 	    };
 	  })
+	}else{
+		req.flash('error_msg', 'No Admin Privileges !!' + req.user.admin);
+		res.redirect('/listbugs');
+	}
 	})
 	app.post("/adduser", function(req, res) {
 	  const user = new usermodel({
 	    name: req.body.inputusername,
-	    designation: req.body.inputdesignation
 	  });
+		designation: req.body.inputdesignation
 	  user.save();
 	  res.redirect("/userlist");
 	});
+	app.post('/updatedesignation/:userid',(req,res)=>{
+		console.log(req.body);
+		let subdesignation ='';
+		let tfstatus ="";
+		switch (req.body.action) {
+		  case "revokeadmin":
+		    console.log("revokeadmin");
+				 subdesignation = "admin";
+				 tfstatus = false;
+				 usermodel.findByIdAndUpdate(req.params.userid,
+				 	{
+				 		$set :{"designation.admin" : false }
+				 	},
+				 	(err,doc)=>{
+				 		console.log(doc);
+				 		res.redirect("/account")
+				 	});
+				console.log(req.params.userid);
+		    break;
+		  case "revokedeveloper":
+		    // code block
+				 console.log("revokedeveloper");
+
+					usermodel.findByIdAndUpdate(req.params.userid,
+						{
+							$set :{"designation.developer" : false }
+						},
+						(err,doc)=>{
+							console.log(doc);
+							res.redirect("/account")
+						});
+				 console.log(req.params.userid);
+		    break;
+		  case "revoketester":
+		    // code block
+				 console.log("revoketester");
+				   subdesignation = "tester";
+					 tfstatus = false;
+					 usermodel.findByIdAndUpdate(req.params.userid,
+					 	{
+					 		$set:{"designation.tester" : false}
+					 	},
+					 	(err,doc)=>{
+					 		console.log(doc);
+					 		res.redirect("/account")
+					 	});
+				 console.log(req.params.userid);
+		    break;
+		  case "invokeadmin":
+		    // code block
+				 console.log("invokeadmin");
+					usermodel.findByIdAndUpdate(req.params.userid,
+						{
+							$set:{"designation.admin" : true}
+						},
+						(err,doc)=>{
+							console.log(doc);
+							res.redirect("/account")
+						});
+				 console.log(req.params.userid);
+		    break;
+		  case "invokedeveloper":
+		    // code block
+				 console.log("revokedeveloper");
+					usermodel.findByIdAndUpdate(req.params.userid,
+						{
+							$set:{"designation.developer":true}
+						},
+						(err,doc)=>{
+							console.log(doc);
+							res.redirect("/account")
+						});
+				 console.log(req.params.userid);
+		    break;
+		  case "invoketester":
+		    // code block
+				 console.log("revoketester");
+					usermodel.findByIdAndUpdate(req.params.userid,
+						{
+							$set:{"designation.tester" : true}
+						},
+						(err,doc)=>{
+							console.log(doc);
+							res.redirect("/account")
+						});
+				 console.log(req.params.userid);
+		    break;
+  default:
+    // code block
+}
+console.log(subdesignation + tfstatus);
+
+		// if(req.body.action=='invoke'){
+		// 	console.log();
+		// }else if (req.body.action=='revoke'){
+		// 	console.log();
+		// }
+	})
+	// here isAuthenticated method depends on
+	//1.passport,
+	//2.passport local ,
+	//3.passport local mongoose ,
+	//4.session]
 	app.get('/deleteuser/:userid', function(req, res) {
 	  console.log(req.params.userid);
 	  usermodel.findByIdAndRemove(req.params.userid, function(err) {
@@ -312,69 +424,83 @@
 	  })
 	  res.redirect("/userlist");
 	});
-
-
-
 	// bug list
 	app.get('/listbugs', function(req, res) {
-	  // here isAuthenticated method depends on
-	  //1.passport,
-	  //2.passport local ,
-	  //3.passport local mongoose ,
-	  //4.session
-	  if (req.isAuthenticated()) {
+
 	    bugmodel.find({}, function(err, buglist) {
 	      if (!err) {
-	        res.render("buglist", {
-	          buglistobj: buglist
+	        res.render("home", {
+	          buglistobj: buglist,
+						currentuser :req.user
 	        });
 	      }
 	    })
-	  } else {
-	    res.redirect('/login');
-	  }
-
-
 	});
+
+	app.get('/account',(req,res)=>{
+		if(req.user.designation.admin){
+		 usermodel.find({}, function(err, userlist){
+		res.render("accountpage",{
+			currentuser:req.user,
+			userlistobj :userlist
+		});
+	})
+}else {
+	res.render("accountpage",{
+		currentuser:req.user,
+		userlistobj : null
+	});
+}
+});
+
 	// showing bug in detail version
 	app.get('/showbug/:bugid', function(req, res) {
-  	usermodel.find({}, (function(err, users) {
+
+		usermodel.find({ "designation.tester": true },(err,users)=> {
 			bugmodel.findById(req.params.bugid, function(err, bugobj) {
 				usermodel.find({
 					'_id' : {
 						$in : bugobj.assignee
 					}
 				},function(err,assignees){
-					console.log(assignees);
+					// console.log(assignees);
 					const assigneddev = [];
 					assignees.forEach((assingee, i) => {
 						assigneddev.push({name :assingee.name,_id:assingee._id});
 					});
-					console.log(assigneddev);
+					// console.log(assigneddev);
 					res.render("showbug", {
 						bugobj,
 						devs: users,
-						assigneddev ,
+						assigneddev,
+						currentuser : req.user,
 					})
 				});
 			});
-		}));
+		});
 });
-
 	//from the button beside to home button
 	app.get("/addbug", function(req, res) {
-		usermodel.find({}, (function(err, users){
- 						 res.render("showbug", {
- 							 bugobj:{},
- 							 devs: users,
-							 assingeddev: '',
- 						 });
+		console.log(req.user);
+	 if (req.user.designation.tester  || req.user.designation.admin){
+			usermodel.find({}, (function(err, users){
+							 res.render("showbug", {
+								 bugobj:{},
+								 devs: users,
+								 assingeddev: '',
+								 currentuser : req.user,
+							 });
 
- 			 }));
+				 }));
+		} else{
+			req.flash("error_msg","Need escalation to Tester to access that page!!")
+			res.redirect("/listbugs")
+		}
+
  	 });
-
-	//saving and updating bug
+	//saving and updating and deleting bug
 	app.post('/editbug/:bugid', function(req, res) {
+		//validation
 		if (req.body.action == 'save') {
 	    const bug = new bugmodel({
 	      nameofthebug: req.body.bugname,
@@ -382,33 +508,59 @@
 	      statusofthebug: "tobe" //new bug status is always to be
 	    });
 	    bug.save(function(err, savedbug) {
-	      console.log(savedbug._id);
+	      console.log(savedbug);
 	      req.flash('success_msg', 'Saved as New Bug');
 	      res.redirect("/showbug/" + savedbug._id);
 	    })
 	    //updating with findByIdAndUpdate
-	  } else if (req.body.action == 'update') {
-			console.log(req.body);
-	    console.log(req.params.bugid);
-			req.body.assingee
-	    bugmodel.findByIdAndUpdate(req.params.bugid, {
-	      nameofthebug: req.body.bugname,
-	      description: req.body.description,
-				$push:{
-					assignee: req.body.assignee== '' ? null : req.body.assignee
-				},
-	    }, function(err, updatedbug) {
-				console.log(err);
-				if (!err) {
-	        console.log(updatedbug);
-	        req.flash('updated_msg', 'Updated the Bug');
-	        console.log("updated Bug" + updatedbug._id);
-	        res.redirect("/showbug/" + updatedbug._id);
-	      }
-	    })
-	  };
-	});
+	  }else if (req.body.action == 'update') {
+  console.log("req.body");
+  console.log(req.body);
+  console.log("updating bug")
 
+  bugmodel.findByIdAndUpdate(req.params.bugid, {
+    nameofthebug: req.body.bugname,
+    description: req.body.description,
+		statusofthebug :req.body.statusofthebug
+    // $push:{
+    // 	assignee: req.body.assignee== '' ? null : req.body.assignee
+    // },
+  }, function(err, updatedbug) {
+    if (err) {
+      console.log(err);
+    } else {																					//add assignee
+			console.log(updatedbug);
+      if (req.body.assignee != '') {
+				console.log("assigning ");
+				console.log("updatedbug._id =" + updatedbug._id);
+				console.log("req.body.assignee =" + req.body.assignee);
+        bugmodel.findByIdAndUpdate(updatedbug._id, {
+          $push: {
+            assignee:  req.body.assignee,
+          }
+        }, function(err, updateddbug){
+					usermodel.findByIdAndUpdate(req.body.assignee,{
+						$push:{
+							bugsassignedto:updatedbug._id,
+						}
+					},function(err,updatedduser){
+						bugmodel.findById(req.params.bugid,(err,bug)=>{console.log(bug);});
+						usermodel.findById(req.body.assignee,(err,user)=>{console.log(user);})
+					});
+				})
+      }
+
+      req.flash('updated_msg', 'Updated the Bug');
+      console.log("updated Bug" + updatedbug._id);
+      res.redirect("/showbug/" + updatedbug._id);
+    }
+  })
+
+		}else if (req.body.action == 'delete') {
+	    bugmodel.findByIdAndDelete(req.params.bugid,function(err){});
+			res.redirect("/listbugs");
+	};
+})
 	// app.post("/savebug", function(req, res) {
 	// 	console.log(req.body);
 	// 	const{bugname,description,action} = req.body;
@@ -429,6 +581,9 @@
 	// 	}
 
 
+	app.get('/settings',(req,res)=>{
+		res.render("settingpage",{currentuser:req.user});
+	})
 	//const {nameofthebug, description}= req.body;
 	// bug.save(function(err, savedbug) {
 	//   console.log("Bug Info saved and id is " + savedbug._id);
