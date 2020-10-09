@@ -1,34 +1,26 @@
-<%- include('partials/header') %>
-<%- include('partials/navbar') %>
 
-<!-- <div class="d-flex p-2 bd-highlight">I'm a flexbox container!</div>
-
-<div class="d-inline-flex p-2 bd-highlight">I'm asdasdasdasdasdan inline flexbox container!</div> -->
-
-<div style="width:50%" class="container-fluid">
+<div style="width:70%" class="container-fluid">
+  <%- include('partials/msgs') %>
   <ul id="buglist" class="text-wrap bugitem list-group">
+
     <li id="buglisthead"style="padding:0px; border: 1px solid black;" class=" list-group-item">
         <div style="display:flex;height:100%; align-items: center;" class="">
           <div style="height:100%" class="col-3 text-center">Bug Title</div>
           <div style="height:100%;overflow: hidden;" class="col-7 text-center">Description</div>
           <div style="height:100%;padding:2px" class="col-2 text-center">Status</div>
         </div>
-  </li>
+      </li>
     <% for (let i = 0 ; i < buglistobj.length; i++){ %>
-
     <a href="/showbug/<%=buglistobj[i]._id%>" style="padding:0px; width:100%;border: 1px solid black;" class=" list-group-item">
-      <li  style="padding:0px;" class="  container nav-link">
           <div style="display:flex;height:100%; align-items: center;" class="">
             <div style="height:100% ;white-space:nowrap ;text-overflow: ellipsis; overflow: hidden; border-right: 1px solid black" class="col-3 text-center"><%=buglistobj[i].nameofthebug%></div>
             <div style="height:100%; white-space:nowrap ;text-overflow: ellipsis; overflow: hidden; border-right: 1px solid black" class="col-7 text-center"><%=buglistobj[i].description%></div>
             <div style="height:100%;padding:2px" class="col-2 text-center"><%=buglistobj[i].statusofthebug%></div>
           </div>
-      </li>
     </a>
     <% } %>
+
+
   </ul>
+
 </div>
-
-
-
-<%- include('partials/footer') %>
