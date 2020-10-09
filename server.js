@@ -66,7 +66,11 @@
 	    developer: Boolean,
 	    admin: Boolean,
 	  },
-	  bugsassignedto: [{
+		bugsreported: [{
+	    type: mongoose.SchemaTypes.ObjectId,
+	    ref: 'bugmodel'
+	  }],
+	  bugsassigned : [{
 	    type: mongoose.SchemaTypes.ObjectId,
 	    ref: 'bugmodel'
 	  }],
@@ -327,7 +331,7 @@
 				 	},
 				 	(err,doc)=>{
 				 		console.log(doc);
-				 		res.redirect("/account")
+				 		res.redirect("/settings")
 				 	});
 				console.log(req.params.userid);
 		    break;
@@ -341,7 +345,7 @@
 						},
 						(err,doc)=>{
 							console.log(doc);
-							res.redirect("/account")
+							res.redirect("/settings")
 						});
 				 console.log(req.params.userid);
 		    break;
@@ -356,7 +360,7 @@
 					 	},
 					 	(err,doc)=>{
 					 		console.log(doc);
-					 		res.redirect("/account")
+					 		res.redirect("/settings")
 					 	});
 				 console.log(req.params.userid);
 		    break;
@@ -369,7 +373,7 @@
 						},
 						(err,doc)=>{
 							console.log(doc);
-							res.redirect("/account")
+							res.redirect("/settings")
 						});
 				 console.log(req.params.userid);
 		    break;
@@ -382,7 +386,7 @@
 						},
 						(err,doc)=>{
 							console.log(doc);
-							res.redirect("/account")
+							res.redirect("/settings")
 						});
 				 console.log(req.params.userid);
 		    break;
@@ -395,7 +399,7 @@
 						},
 						(err,doc)=>{
 							console.log(doc);
-							res.redirect("/account")
+							res.redirect("/settings")
 						});
 				 console.log(req.params.userid);
 		    break;
@@ -437,26 +441,26 @@ console.log(subdesignation + tfstatus);
 	    })
 	});
 
-	app.get('/account',(req,res)=>{
-		if(req.user.designation.admin){
-		 usermodel.find({}, function(err, userlist){
-		res.render("accountpage",{
-			currentuser:req.user,
-			userlistobj :userlist
-		});
-	})
-}else {
-	res.render("accountpage",{
-		currentuser:req.user,
-		userlistobj : null
+	app.get('/settings', (req, res) => {
+	  if (req.user.designation.admin) {
+	    usermodel.find({}, function(err, userlist) {
+	      res.render("settingspage", {
+	        currentuser: req.user,
+	        userlistobj: userlist
+	      });
+	    })
+	  } else {
+	    res.render("settingspage", {
+	      currentuser: req.user,
+	      userlistobj: null
+	    });
+	  }
 	});
-}
-});
 
 	// showing bug in detail version
 	app.get('/showbug/:bugid', function(req, res) {
 
-		usermodel.find({ "designation.tester": true },(err,users)=> {
+		usermodel.find({ "designation.developer": true },(err,users)=> {
 			bugmodel.findById(req.params.bugid, function(err, bugobj) {
 				usermodel.find({
 					'_id' : {
@@ -509,8 +513,15 @@ console.log(subdesignation + tfstatus);
 	    });
 	    bug.save(function(err, savedbug) {
 	      console.log(savedbug);
-	      req.flash('success_msg', 'Saved as New Bug');
-	      res.redirect("/showbug/" + savedbug._id);
+				if(!err){
+					usermodel.findByIdAndUpdate(req.user._id,{
+						$push:{bugsreported:savedbug._id}
+					},function(err,userreported){
+						req.flash('success_msg', 'Saved as New Bug');
+			      res.redirect("/showbug/" + savedbug._id);
+					});
+				}
+
 	    })
 	    //updating with findByIdAndUpdate
 	  }else if (req.body.action == 'update') {
@@ -541,7 +552,7 @@ console.log(subdesignation + tfstatus);
         }, function(err, updateddbug){
 					usermodel.findByIdAndUpdate(req.body.assignee,{
 						$push:{
-							bugsassignedto:updatedbug._id,
+							bugsassigned:updatedbug._id,
 						}
 					},function(err,updatedduser){
 						bugmodel.findById(req.params.bugid,(err,bug)=>{console.log(bug);});
@@ -580,10 +591,43 @@ console.log(subdesignation + tfstatus);
 	// 		})
 	// 	}
 
-
-	app.get('/settings',(req,res)=>{
-		res.render("settingpage",{currentuser:req.user});
+	app.get('/account/',(req,res)=>{
+		res.render("accountpage",{
+			currentuser:req.user,
+			buglistobj :req.user.bugsreported,
+		});
 	})
+
+	app.get('/account/:tab',(req,res)=>{
+
+		if(req.params.tab=="bugsreported"){
+			// req.user.bugsreported.forEach((bugid, i) => {
+			// 	let	bugsreportedarr = [];
+			// 	bugmodel.findById
+			// });
+			console.log("here");
+			console.log(req.user.bugsreported);
+			bugmodel.find({ "_id": { $in : req.user.bugsreported } },(err,bugsreported)=>{
+				console.log(bugsreported);
+				res.render("accountpage",{
+					currentuser:req.user,
+					buglistobj :bugsreported,
+					title: "Bugs Reported",
+					color : ["#ffb6b9","#fae3d9"]
+				})
+			});
+		}else if (req.params.tab == "bugsassigned"){
+
+			bugmodel.find({ _id: { $in: req.user.bugsassigned } },(err,bugsassigned)=>{
+			res.render("accountpage",{
+				currentuser:req.user,
+				buglistobj :bugsassigned,
+				title: "Assinged Bugs",
+				color : ["#fae3d9","#ffb6b9"]
+			})
+		})
+	}
+});
 	//const {nameofthebug, description}= req.body;
 	// bug.save(function(err, savedbug) {
 	//   console.log("Bug Info saved and id is " + savedbug._id);
