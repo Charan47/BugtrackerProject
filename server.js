@@ -318,13 +318,9 @@
 	});
 	app.post('/updatedesignation/:userid',(req,res)=>{
 		console.log(req.body);
-		let subdesignation ='';
-		let tfstatus ="";
 		switch (req.body.action) {
 		  case "revokeadmin":
 		    console.log("revokeadmin");
-				 subdesignation = "admin";
-				 tfstatus = false;
 				 usermodel.findByIdAndUpdate(req.params.userid,
 				 	{
 				 		$set :{"designation.admin" : false }
@@ -338,7 +334,6 @@
 		  case "revokedeveloper":
 		    // code block
 				 console.log("revokedeveloper");
-
 					usermodel.findByIdAndUpdate(req.params.userid,
 						{
 							$set :{"designation.developer" : false }
@@ -352,8 +347,6 @@
 		  case "revoketester":
 		    // code block
 				 console.log("revoketester");
-				   subdesignation = "tester";
-					 tfstatus = false;
 					 usermodel.findByIdAndUpdate(req.params.userid,
 					 	{
 					 		$set:{"designation.tester" : false}
@@ -406,7 +399,7 @@
   default:
     // code block
 }
-console.log(subdesignation + tfstatus);
+
 
 		// if(req.body.action=='invoke'){
 		// 	console.log();
@@ -419,7 +412,7 @@ console.log(subdesignation + tfstatus);
 	//2.passport local ,
 	//3.passport local mongoose ,
 	//4.session]
-	app.get('/deleteuser/:userid', function(req, res) {
+	app.post('/deleteaccount/:userid', function(req, res) {
 	  console.log(req.params.userid);
 	  usermodel.findByIdAndRemove(req.params.userid, function(err) {
 	    if (!err) {
@@ -435,12 +428,24 @@ console.log(subdesignation + tfstatus);
 	      if (!err) {
 	        res.render("home", {
 	          buglistobj: buglist,
-						currentuser :req.user
+						currentuser :req.user,
+						color: null
 	        });
 	      }
 	    })
 	});
 
+	app.get('/listbugs/:tab',(req,res)=>{
+		let changetab = function(tab){
+			bugmodel.find({statusofthebug :tab},(err,bugobjlist)=>{
+				res.render("home",{
+				currentuser:req.user,
+				buglistobj :bugobjlist,
+			})
+			})
+		}
+		changetab(req.params.tab);
+	})
 	app.get('/settings', (req, res) => {
 	  if (req.user.designation.admin) {
 	    usermodel.find({}, function(err, userlist) {
@@ -509,7 +514,7 @@ console.log(subdesignation + tfstatus);
 	    const bug = new bugmodel({
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
-	      statusofthebug: "tobe" //new bug status is always to be
+	      statusofthebug: "to be validated" //new bug status is always to be
 	    });
 	    bug.save(function(err, savedbug) {
 	      console.log(savedbug);
@@ -597,7 +602,6 @@ console.log(subdesignation + tfstatus);
 			buglistobj :req.user.bugsreported,
 		});
 	})
-
 	app.get('/account/:tab',(req,res)=>{
 
 		if(req.params.tab=="bugsreported"){
@@ -608,12 +612,11 @@ console.log(subdesignation + tfstatus);
 			console.log("here");
 			console.log(req.user.bugsreported);
 			bugmodel.find({ "_id": { $in : req.user.bugsreported } },(err,bugsreported)=>{
-				console.log(bugsreported);
 				res.render("accountpage",{
 					currentuser:req.user,
 					buglistobj :bugsreported,
 					title: "Bugs Reported",
-					color : ["#ffb6b9","#fae3d9"]
+					color : ["#ffb6b9","#fae3d9","#fae3d9"]
 				})
 			});
 		}else if (req.params.tab == "bugsassigned"){
@@ -623,7 +626,16 @@ console.log(subdesignation + tfstatus);
 				currentuser:req.user,
 				buglistobj :bugsassigned,
 				title: "Assinged Bugs",
-				color : ["#fae3d9","#ffb6b9"]
+				color : ["#fae3d9","#ffb6b9","#fae3d9"]
+			})
+		})
+	} else if( req.params.tab == "bugsunassigned"){
+		bugmodel.find({assignee: null},(err,bugsunassigned)=>{
+			res.render("accountpage",{
+				currentuser:req.user,
+				buglistobj :bugsunassigned,
+				title: "Assinged Bugs",
+				color : ["#fae3d9","#fae3d9","#ffb6b9"]
 			})
 		})
 	}
