@@ -1,35 +1,26 @@
-<%- include('partials/header') %>
 
-  <%- include('navbar') %>
-  <div style="" class="container">
+<div style="width:70%" class="container-fluid">
+  <%- include('partials/msgs') %>
+  <ul id="buglist" class="text-wrap bugitem list-group">
 
-    <ul class="list-group">
-			<% for (let i = 0 ; i < buglistobj.length; i++){ %>
-      <li style="padding:0px;border: 1px solid black;"class="list-group-item">
-        <a href="" class="nav-link"><div style="height:50px" class="container">
-          <div style="display:flex;height:100%; align-items: center;" class="row">
-            <div style="text-align: left;height:100%" class="col-3 text-justify"><%=buglistobj[i].nameofthebug%></div>
-            <div style="text-align: left; overflow: hidden;" class="col-8"><%=buglistobj[i].Description%></div>
-            <div class="col-1"><%=buglistobj[i].statusofthebug%></div>
+    <li id="buglisthead"style="padding:0px; border: 1px solid black;" class=" list-group-item">
+        <div style="display:flex;height:100%; align-items: center;" class="">
+          <div style="height:100%" class="col-3 text-center">Bug Title</div>
+          <div style="height:100%;overflow: hidden;" class="col-7 text-center">Description</div>
+          <div style="height:100%;padding:2px" class="col-2 text-center">Status</div>
+        </div>
+      </li>
+    <% for (let i = 0 ; i < buglistobj.length; i++){ %>
+    <a href="/showbug/<%=buglistobj[i]._id%>" style="padding:0px; width:100%;border: 1px solid black;" class=" list-group-item">
+          <div style="display:flex;height:100%; align-items: center;" class="">
+            <div style="height:100% ;white-space:nowrap ;text-overflow: ellipsis; overflow: hidden; border-right: 1px solid black" class="col-3 text-center"><%=buglistobj[i].nameofthebug%></div>
+            <div style="height:100%; white-space:nowrap ;text-overflow: ellipsis; overflow: hidden; border-right: 1px solid black" class="col-7 text-center"><%=buglistobj[i].description%></div>
+            <div style="height:100%;padding:2px" class="col-2 text-center"><%=buglistobj[i].statusofthebug%></div>
           </div>
-        </div></a>
-			</li>
-			<% } %>
-    </ul>
-  </div>
+    </a>
+    <% } %>
 
 
+  </ul>
 
-
-
-        <!-- <div style="margin-bottom:-10px; height:30px" class="col-12"> this is footer</div> -->
-
-
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
-
-</html>
+</div>

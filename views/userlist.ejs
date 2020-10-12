@@ -1,75 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- <style media="screen">
-    div {
-      border: 1px solid black;
-      margin: 10px;
-    }
-
-
-  </style>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-  <title>Hello, world!</title>
-</head>
-
-<body style="background-color:#89beb3; text-align: center">
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Bug Tracker</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/listbugs">Home<span class="sr-only">(current)</span></a>
-          </li>
-					<li class="nav-item active">
-            <a class="nav-link" href="/userlist"> <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"></a>
-          </li>
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-            </a>
-             /**<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>**/ -->
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
-    </nav>
-  </header>
   <div style="" class="container">
 
 		<ul class="list-group">
-			 <% for (let i = 0 ; i < usernameobj.length; i++){ %>
-		<li class="list-group-item" style="padding:30px">
-				<div class="col-md-4"><%= usernameobj[i].name %></div>
-				<div class="col-md-4"><%= usernameobj[i].designation %></div>
-				<div class="col-md-4"> <form action="/deleteuser/<%= usernameobj[i]._id%>">
-			<input type="submit" value="DEL" /></div>
-		</li>
+			 <% for (let i = 0 ; i < userobj.length; i++){ %>
+
+                       <div style="margin-bottom:10px" class="container">
+                         <div class="row">
+                           <div class="col-5">
+                             <div style="height:300px" class="card">
+                               <div class="card-body">
+                                 <dl class="row">
+                                   <dt style="margin-bottom:10px" class="col-sm-12 text-center">User Account <%=i%></dt>
+                                   <dt class="col-sm-4">Name</dt>
+                                   <dd class="col-sm-8"><%=userobj[i].name%></dd>
+
+                                   <dt class="col-sm-4">Designation</dt>
+                                   <dd class="col-sm-8">
+                                     <p><%= userobj[i].designation.admin ? "Admin" : '' %><%= userobj[i].designation.developer ? "Developer" : ''%><%= userobj[i].designation.tester ? "Tester" : ''%> </p>
+                                     <p> </p>
+                                   </dd>
+
+                                   <dt class="col-sm-4">Report</dt>
+                                   <dd class="col-sm-8"></dd>
+                               </div>
+                             </div>
+                           </div>
+
+                           <div class="col-7">
+                             <form class="" method="post">
+                               <div style="height:300px" class="card">
+                                 <div class="card-body">
+                                   <div class="form-group">
+                                     <label class="d-block" for="userid"> User ID </label>
+                                     <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" " name=" userid" value="<%=userobj[i]._id %>">
+                                   </div>
+                                   <form method="post">
+                                     <div class="form-group">
+                                       <% if(userobj[i].designation.admin) { %>
+                                       <button type="submit" name="action" value="revokeadmin" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-primary">Revoke Admin status</button>
+                                       <%}%>
+                         <% if(userobj[i].designation.developer) { %>
+                                       <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-secondary">Revoke Developer status</button>
+                                       <%}%>
+                         <% if(userobj[i].designation.tester) { %>
+                                       <button type="submit" name="action" value="revoketester" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-info">Revoke Tester status</button>
+                                       <%}%>
+                         </div>
+                         </form>
+                         <form method="post">
+                         <div class="form-group">
+                         <% if(!userobj[i].designation.admin) { %>
+                                       <button type="submit" name="action" value="invokeadmin" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Admin status</button>
+                                       <%}%>
+                         <% if(!userobj[i].designation.developer) { %>
+                                       <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Developer status</button>
+                                       <%}%>
+                         <% if(!userobj[i].designation.tester) { %>
+                                       <button type="submit" name="action" value="invoketester" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Tester status</button>
+                                       <%}%>
+                         </div>
+                         </form>
+                         <div class="form-group"
+                               <form >
+           			               <button type="submit" name="action" value="delete" formaction="deleteaccount/<%=userobj[i]._id%>"class="btn btn-primary" >Delete Account</button>
+                              </form>
+                              </div>
+                           </div>
+                       </div>
+                       </form>
+                   </div>
+                 </div>
+             </div>
 		<% } %>
 	</ul>
 
@@ -81,6 +84,7 @@
     </div>
   </div>
 </div>
+
   <form action="/adduser" method="post">
   <div class="form-group">
     <input type="text" class="form-control" name="inputusername" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Name">

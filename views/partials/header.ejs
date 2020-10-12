@@ -4,28 +4,128 @@
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-   <style media="screen">
-   /* *{
-     border : 1px solid black;
-   } */
+  <style media="screen">
+    /* * {
+      border: 1px solid black;
+    } */
+    .noHover{
+    pointer-events: none;
+}
+    body {
+      background-color: #89beb3 !important
+    }
 
-   body {
-     background-color: #89beb3 !important  }
-   .jumbotron {
-       padding-top: 200px !important;
-       padding: 2rem 1rem;
-       margin-bottom: 2rem;
-       background-color: #89beb3 !important;
-       border-radius: .3rem;
-   }
-   .centered {
-       padding-top: 200px;
-       text-align: center;
-   }
+    .bugitem a {
+      color: #14171c;
+    }
+
+    #buglisthead {
+      background-color: #fae3d9;
+    }
+
+    #buglist {
+      /* font-size: 1.3vw; */
+    }
+
+    #buglist a:hover {
+      background-color: #ffb6b9!important;
+      color: #14171c !important;
+    }
+
+    #dropdownsetting {
+      background-color: #fae3d9;
+      width: 400% ;
+      /* font-size: 1.3vw !important; */
+      padding :10px;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #fae3d9;
+      font-size: 1.4vw !important;
+      margin-bottom: 100px;
+      height:80px;
+    }
+    nav a {
+
+      border-radius: 10px !important;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    nav a:hover {
+      background-color: #ffb6b9;
+      color: #14171c;
+    }
+    .navbar-brand {
+      font-size: 2.2vw !important;
+    }
+
+    .jumbotron {
+      padding-top: 200px !important;
+      padding: 2rem 1rem;
+      margin-bottom: 2rem;
+      background-color: #89beb3 !important;
+      border-radius: .3rem;
+    }
+
+    .centered {
+      padding-top: 200px;
+      text-align: center;
+    }
+    /* The sidebar menu */
+    .sidenav {
+      height: 40%; /* Full-height: remove this if you want "auto" height */
+      width: 160px; /* Set the width of the sidebar */
+      position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+      z-index: 1; /* Stay on top */
+      top: 1; /* Stay at the top */
+      left: 0;
+      background-color: #; /* white */
+      overflow-x: hidden; /* Disable horizontal scroll */
+      /* padding-top: 20px; */
+      margin-top:80px;
+    }
+
+    /* The navigation menu links */
+    .sidenav a {
+      background-color: #fae3d9 !important;
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 17px;
+      color: #14171c !important;
+      display: block;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .sidenav a:hover {
+      background-color: #ffb6b9 !important;
+      text-decoration: none;
+      color: #14171c !important;
+    }
+
+    /* Style page content */
+    .main {
+      margin-left: 160px; /* Same as the width of the sidebar */
+      padding: 0px 10px;
+    }
+
+    /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+
   </style>
   <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-<link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Latest compiled and minified CSS -->
+
+
 
 </head>
 

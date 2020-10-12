@@ -1,78 +1,112 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
 
-<!DOCTYPE html>
-<html lang="en">
+<div style="width:70%" class="container-fluid">
 
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <style media="screen">
-    /* div {
-      border: 1px solid black;
-    } */
-  </style>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        <div class="form-group">
+          <%- include('partials/msgs') %>
+          <label class="d-block" for="bugname"> Bug Title </label>
+          <input type="text" class="form-control" name="bugname" id="inputbugname" placeholder="" value="<%= typeof bugobj.nameofthebug != "undefined" ? bugobj.nameofthebug :''%> ">
+        </div>
+        <div class="form-group">
+          <label class="d-block" for="description"> Description</label>
+          <textarea type="text" class="d-block" style="height:200px;width:100%" id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.description != 'undefined' ? bugobj.description : '' %></textarea>
+        </div>
 
-  <title>Hello, world!</title>
-</head>
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label class="d-block" for="bugid"> Bug Id </label>
+              <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>">
+            </div>
+            <div class="form-group">
+              <% if((currentuser.designation.admin) ||(currentuser.designation.tester)) { %>
+              <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-primary">Save as new</button>
+              <%}%>
+              <% if(typeof bugobj._id !='undefined') { %>
+              <button type="submit" name="action" value="update" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">Update</button>
+              <%}%>
+              <% if(typeof bugobj._id !='undefined' && (currentuser.designation.admin || currentuser.designation.tester)) { %>
+              <button type="submit" name="action" value="delete" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">Delete</button>
+              <%}%>
+              </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label class="d-block" for="assignee"> Assignee</label>
+              <% if (typeof assigneddev != 'undefined'){
+              assigneddev.forEach((assigneddev,i)=>{ %>
+              <input
+              style="width:80%"
+              type="text"
+              class="d-inline form-control"
+              readonly="readonly"
+              value="<%=typeof assigneddev !='undefined' ? assigneddev.name : ''%>">
+              <%})}%>
+              <% if(currentuser.designation.admin){ %>
+              <div class="wrapper">
+                <select
+                style=""
+                type="text"
+                class="form-control"
+                id="assignee"
+                name="assignee"
+                value="">
+                <option  selected></option>
+                <% devs.forEach((dev, i) => { %>
+                  <option  name="assigneeid" value="<%=dev._id%>"><%=dev.name%></option>
+                <%});%>
+                </select>
+              </div>
+            <%}%>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label class="d-block" for="bugstatus"> Bug Status</label>
+              <input
+              style="width:225px"
+              type="text"
+              class="d-inline form-control"
+              readonly
+              id=" bugid"
+              value="<%=typeof bugobj.statusofthebug !='undefined' ? bugobj.statusofthebug: ''%>">
 
-<body style="background-color:#89beb3; text-align: center">
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Bug Tracker</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+              <% if((currentuser.designation.developer) ||(currentuser.designation.admin)) { %>
+              <div class="wrapper">
+                <select
+                style="width:70%; "
+                text="text"
+                class="form-control"
+                id="status"
+                name="statusofthebug"
+                value="">
+                  <option  name="status" value="Awaiting Validation" selected> </option>
+                  <option  name="status" value="Awaiting Validation" > Awaiting Validation</option>
+                  <option  name="status" value="Valid"> Valid</option>
+                  <option  name="status" value="Invalid"> Invalid</option>
+                  <option  name="status" value="In Progress"> In Process</option>
+                  <option  name="status" value="To Be Done"> To be done</option>
+                  <option  name="status" value="Done">Done</option>
+                </select>
+              </div>
+            <%}%>
+            </div>
+          </div>
+        </div>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"></a>
-          </li>
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-            </a>
-             /**<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>**/ -->
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>
-    </nav>
-  </header>
-  <div style="" class="container">
-    <div style=""
+
+      </form>
+    </div>
   </div>
-  <ul style="background-color:#89beb3; text-align: center" class="list-group">
-    <li class="list-group-item">
+</div>
 
 
-        <div class="col-1">col</div>
-      </div>
-      </div>
-    </li>
-  </ul>
 
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
 
-</html>
+
+<%- include('partials/footer') %>
