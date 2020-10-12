@@ -4,7 +4,7 @@
 
 
 <div class="sidenav">
-  <a style="background-color:<%=color[0]%> !important " href="/account/bugsreported">Bugs Reported</a>
-  <a style="background-color:<%=color[1]%> !important " href="/account/bugsassigned">Bugs Assigned</a>
-  <a style="background-color:<%=color[2]%> !important " href="/account/bugsunassigned">Bugs Unassigned</a>
+<%if(currentuser.designation.tester) {%><a style="background-color:<%=color[0]%> !important " href="/account/bugsreported">Bugs Reported</a> <%}%>
+<%if(currentuser.designation.developer) {%> <a style="background-color:<%=color[1]%> !important " href="/account/bugsassigned">Bugs Assigned</a><%}%>
+<%if(currentuser.designation.manager) {%>  <a style="background-color:<%=color[2]%> !important " href="/account/bugsunassigned">Bugs Unassigned</a><%}%>
 </div>

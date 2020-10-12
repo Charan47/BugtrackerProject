@@ -18,7 +18,7 @@
 
                                    <dt class="col-sm-4">Designation</dt>
                                    <dd class="col-sm-8">
-                                     <p><%= userobj[i].designation.admin ? "Admin" : '' %><%= userobj[i].designation.developer ? "Developer" : ''%><%= userobj[i].designation.tester ? "Tester" : ''%> </p>
+                                     <p><%= userobj[i].designation.manager ? "manager" : '' %><%= userobj[i].designation.developer ? "Developer" : ''%><%= userobj[i].designation.tester ? "Tester" : ''%> </p>
                                      <p> </p>
                                    </dd>
 
@@ -38,8 +38,8 @@
                                    </div>
                                    <form method="post">
                                      <div class="form-group">
-                                       <% if(userobj[i].designation.admin) { %>
-                                       <button type="submit" name="action" value="revokeadmin" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-primary">Revoke Admin status</button>
+                                       <% if(userobj[i].designation.manager) { %>
+                                       <button type="submit" name="action" value="revokemanager" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-primary">Revoke Manager status</button>
                                        <%}%>
                          <% if(userobj[i].designation.developer) { %>
                                        <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-secondary">Revoke Developer status</button>
@@ -51,8 +51,8 @@
                          </form>
                          <form method="post">
                          <div class="form-group">
-                         <% if(!userobj[i].designation.admin) { %>
-                                       <button type="submit" name="action" value="invokeadmin" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Admin status</button>
+                         <% if(!userobj[i].designation.manager) { %>
+                                       <button type="submit" name="action" value="invokemanager" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Manager status</button>
                                        <%}%>
                          <% if(!userobj[i].designation.developer) { %>
                                        <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=userobj[i]._id%>" class="btn btn-warning">Invoke Developer status</button>

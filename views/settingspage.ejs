@@ -13,8 +13,7 @@
 
             <dt class="col-sm-4">Designation</dt>
             <dd class="col-sm-8">
-              <p><%= currentuser.designation.admin ? "Admin" : '.' %> <%= currentuser.designation.developer ? "Developer" : '.'%> <%= currentuser.designation.tester ? "Tester" : '.'%> </p>
-              <p> (Escalated to )</p>
+              <p><%= currentuser.designation.manager ? "Manager" : '.' %> <%= currentuser.designation.developer ? "Developer" : '.'%> <%= currentuser.designation.tester ? "Tester" : '.'%> </p>
             </dd>
 
             <dt class="col-sm-4">Report</dt>
@@ -31,30 +30,30 @@
               <label class="d-block" for="userid"> User ID </label>
               <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" " name=" userid" value="<%=currentuser._id %>">
             </div>
-            <% if(currentuser.designation.admin){%>
+            <% if(currentuser.designation.manager){%>
               <form method="post">
               <div class="form-group">
                 <%  { %>
-                <button type="submit" name="action" value="revokeadmin" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-primary">Revoke Admin status</button>
+                <button type="submit" name="action" value="revokemanager" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-primary">Remove Manager role</button>
                 <%}%>
   <% if(currentuser.designation.developer) { %>
-                <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-secondary">Revoke Developer status</button>
+                <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-secondary">Remove Developer role</button>
                 <%}%>
   <% if(currentuser.designation.tester) { %>
-                <button type="submit" name="action" value="revoketester" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-info">Revoke Tester status</button>
+                <button type="submit" name="action" value="revoketester" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-info">Remove Tester role</button>
                 <%}%>
   </div>
   </form>
   <form method="post">
   <div class="form-group">
-  <% if(!currentuser.designation.admin) { %>
-                <button type="submit" name="action" value="invokeadmin" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Invoke Admin status</button>
+  <% if(!currentuser.designation.manager) { %>
+                <button type="submit" name="action" value="invokemanager" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Add Manager role</button>
                 <%}%>
   <% if(!currentuser.designation.developer) { %>
-                <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Invoke Developer status</button>
+                <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Add Developer role</button>
                 <%}%>
   <% if(!currentuser.designation.tester) { %>
-                <button type="submit" name="action" value="invoketester" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Invoke Tester status</button>
+                <button type="submit" name="action" value="invoketester" formaction="/updatedesignation/<%=currentuser._id%>" class="btn btn-warning">Add Tester role</button>
                 <%}%>
   </div>
   </form><%}%>
@@ -70,78 +69,76 @@
       </div>
   </div>
   <% if((userlistobj)!= null) {
-   userlistobj.forEach((userobj, i) => { %>
+    for (let i = 0 ; i < userlistobj.length; i++){%>
 
-              <div style="margin-bottom:10px" class="container">
-                <div class="row">
-                  <div class="col-5">
-                    <div style="height:300px" class="card">
-                      <div class="card-body">
-                        <dl class="row">
-                          <dt style="margin-bottom:10px" class="col-sm-12 text-center">User Account <%=i%></dt>
-                          <dt class="col-sm-4">Name</dt>
-                          <dd class="col-sm-8"><%=userobj.name%></dd>
+                    <div style="margin-bottom:10px" class="container">
+                      <div class="row">
+                        <div class="col-5">
+                          <div style="height:300px" class="card">
+                            <div class="card-body">
+                              <dl class="row">
+                                <dt style="margin-bottom:10px" class="col-sm-12 text-center">User Account <%=i%></dt>
+                                <dt class="col-sm-4">Name</dt>
+                                <dd class="col-sm-8"><%=userlistobj[i].name%></dd>
 
-                          <dt class="col-sm-4">Designation</dt>
-                          <dd class="col-sm-8">
-                            <p><%= userobj.designation.admin ? "Admin" : '' %><%= userobj.designation.developer ? "Developer" : ''%><%= userobj.designation.tester ? "Tester" : ''%> </p>
-                            <p> </p>
-                          </dd>
+                                <dt class="col-sm-4">Designation</dt>
+                                <dd class="col-sm-8">
+                                  <p><%= userlistobj[i].designation.manager ? "manager" : '' %><%= userlistobj[i].designation.developer ? "Developer" : ''%><%= userlistobj[i].designation.tester ? "Tester" : ''%> </p>
+                                  <p> </p>
+                                </dd>
 
-                          <dt class="col-sm-4">Report</dt>
-                          <dd class="col-sm-8"></dd>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-7">
-                    <form class="" method="post">
-                      <div style="height:300px" class="card">
-                        <div class="card-body">
-                          <div class="form-group">
-                            <label class="d-block" for="userid"> User ID </label>
-                            <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" " name=" userid" value="<%=userobj._id %>">
+                                <dt class="col-sm-4">Report</dt>
+                                <dd class="col-sm-8"></dd>
+                            </div>
                           </div>
-                          <form method="post">
-                            <div class="form-group">
-                              <% if(userobj.designation.admin) { %>
-                              <button type="submit" name="action" value="revokeadmin" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-primary">Revoke Admin status</button>
-                              <%}%>
-                <% if(userobj.designation.developer) { %>
-                              <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-secondary">Revoke Developer status</button>
-                              <%}%>
-                <% if(userobj.designation.tester) { %>
-                              <button type="submit" name="action" value="revoketester" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-info">Revoke Tester status</button>
-                              <%}%>
+                        </div>
+
+                        <div class="col-7">
+                          <form class="" method="post">
+                            <div style="height:300px" class="card">
+                              <div class="card-body">
+                                <div class="form-group">
+                                  <label class="d-block" for="userid"> User ID </label>
+                                  <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" " name=" userid" value="<%=userlistobj[i]._id %>">
+                                </div>
+                                <form method="post">
+                                  <div class="form-group">
+                                    <% if(userlistobj[i].designation.manager) { %>
+                                    <button type="submit" name="action" value="revokemanager" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-primary">Remove Manager role</button>
+                                    <%}%>
+                      <% if(userlistobj[i].designation.developer) { %>
+                                    <button type="submit" name="action" value="revokedeveloper" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-secondary">Remove Developer role</button>
+                                    <%}%>
+                      <% if(userlistobj[i].designation.tester) { %>
+                                    <button type="submit" name="action" value="revoketester" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-info">Remove Tester role</button>
+                                    <%}%>
+                      </div>
+                      </form>
+                      <form method="post">
+                      <div class="form-group">
+                      <% if(!userlistobj[i].designation.manager) { %>
+                                    <button type="submit" name="action" value="invokemanager" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-warning">Add Manager role</button>
+                                    <%}%>
+                      <% if(!userlistobj[i].designation.developer) { %>
+                                    <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-warning">Add Developer role</button>
+                                    <%}%>
+                      <% if(!userlistobj[i].designation.tester) { %>
+                                    <button type="submit" name="action" value="invoketester" formaction="/updatedesignation/<%=userlistobj[i]._id%>" class="btn btn-warning">Add Tester role</button>
+                                    <%}%>
+                      </div>
+                      </form>
+                      <div class="form-group"
+                            <form >
+                            <button type="submit" name="action" value="delete" formaction="deleteaccount/<%=userlistobj[i]._id%>"class="btn btn-primary" >Delete Account</button>
+                           </form>
+                           </div>
+                        </div>
+                    </div>
+                    </form>
                 </div>
-                </form>
-                <form method="post">
-                <div class="form-group">
-                <% if(!userobj.designation.admin) { %>
-                              <button type="submit" name="action" value="invokeadmin" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-warning">Invoke Admin status</button>
-                              <%}%>
-                <% if(!userobj.designation.developer) { %>
-                              <button type="submit" name="action" value="invokedeveloper" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-warning">Invoke Developer status</button>
-                              <%}%>
-                <% if(!userobj.designation.tester) { %>
-                              <button type="submit" name="action" value="invoketester" formaction="/updatedesignation/<%=userobj._id%>" class="btn btn-warning">Invoke Tester status</button>
-                              <%}%>
-                </div>
-                </form>
-                <div class="form-group"
-                      <form >
-  			               <button type="submit" name="action" value="delete" formaction="deleteaccount/<%=userobj._id%>"class="btn btn-primary" >Delete Account</button>
-                     </form>
-                     </div>
-                  </div>
               </div>
-              </form>
           </div>
-        </div>
-    </div>
-
-
-<%})}%>
+ <% }}%>
 
 
 

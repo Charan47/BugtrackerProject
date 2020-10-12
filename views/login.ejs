@@ -2,7 +2,7 @@
 
 
 <div class="container mt-5">
-  <h1>Login</h1>
+  <h1 style="color:black">Login</h1>
 
   <div class="row">
     <div class="col-sm-8">
@@ -10,7 +10,7 @@
         <div class="card-body">
 
           <!-- Makes POST request to /login route -->
-          <form action="/login" method="POST">
+          <form action="/login" method="post">
             <%- include('partials/msgs') %>
             <div class="form-group">
               <label for="email">Email</label>
@@ -20,12 +20,10 @@
               <label for="password">Password</label>
               <input type="password" class="form-control" name="password">
             </div>
-            <button type="submit" class="btn btn-dark">Login</button>
-            <form>
-              <input type="button" class="btn btn-dark" value="Back" onclick="history.back()">
+            <button type="submit" class="btn btn-success">Login</button>
             </form>
+            <p style="margin-top:15px"> No Account ? Register <a href="http://localhost:4000/register">here</a> </p>
 
-            </form>
 
 
 
@@ -34,7 +32,7 @@
       </div>
     </div>
 
-    <%- include('partials/googlebutton') %>
+
 
   </div>
 </div>
