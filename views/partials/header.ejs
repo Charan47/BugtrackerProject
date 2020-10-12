@@ -5,22 +5,37 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <style media="screen">
+    /* :root {
+      --main-bg-color: #AFD4CD;
+      --main-color-2 : #89BEB4
+    } */
+
+    :root{
+      --main-bg-color: #676767;
+      --main-nav-color:#01ff09b3;
+      --main-lightgreen-color:#28a745;
+      --main-hover-blue:#99c6ff;
+      /* --main-green-color: #20d225; */
+       --main-green-color: #28a745;
+    }
     /* * {
       border: 1px solid black;
     } */
-    .noHover{
-    pointer-events: none;
-}
-    body {
-      background-color: #89beb3 !important
+    .noHover {
+      pointer-events: none;
     }
 
+    body {
+      background-color: var(--main-bg-color) !important;
+    }
     .bugitem a {
       color: #14171c;
     }
 
-    #buglisthead {
-      background-color: #fae3d9;
+    #buglisthead ,#filternavbarhead {
+      background-color: var(--main-green-color) !important;
+      color: #fff!important;
+      font-weight: 640;
     }
 
     #buglist {
@@ -28,7 +43,7 @@
     }
 
     #buglist a:hover {
-      background-color: #ffb6b9!important;
+      background-color:   var(--main-hover-blue)!important;
       color: #14171c !important;
     }
 
@@ -38,16 +53,21 @@
       /* font-size: 1.3vw !important; */
       padding :10px;
       text-align: center;
+
     }
 
     nav {
-      background-color: #fae3d9;
-      font-size: 1.4vw !important;
+      background-color: var(--main-nav-color) !important;
+      font-size: 1.4vw ;
       margin-bottom: 100px;
       height:80px;
+
+
     }
     nav a {
-
+      color: black !important;
+      font-size: 1.6vw ;
+      font-weight: bold;
       border-radius: 10px !important;
       margin-top: 0px;
       margin-bottom: 0px;
@@ -55,18 +75,19 @@
       margin-right: 5px;
     }
     nav a:hover {
-      background-color: #ffb6b9;
-      color: #14171c;
+      background-color:   var(--main-hover-blue) !important;
+      color: #14171c !important;
     }
     .navbar-brand {
       font-size: 2.2vw !important;
     }
 
     .jumbotron {
-      padding-top: 200px !important;
+      font-size: 70px !important;
+      padding-top: 400px !important;
       padding: 2rem 1rem;
       margin-bottom: 2rem;
-      background-color: #89beb3 !important;
+      background-color: var(--main-color-2) !important;
       border-radius: .3rem;
     }
 
@@ -74,13 +95,13 @@
       padding-top: 200px;
       text-align: center;
     }
-    /* The sidebar menu */
-    .sidenav {
-      height: 40%; /* Full-height: remove this if you want "auto" height */
-      width: 160px; /* Set the width of the sidebar */
+
+    .sidenav1 {
+      height: 100%; /* Full-height: remove this if you want "auto" height */
+      width: 15%; /* Set the width of the sidebar */
       position: fixed; /* Fixed Sidebar (stay in place on scroll) */
       z-index: 1; /* Stay on top */
-      top: 1; /* Stay at the top */
+      top: 0; /* Stay at the top */
       left: 0;
       background-color: #; /* white */
       overflow-x: hidden; /* Disable horizontal scroll */
@@ -89,8 +110,40 @@
     }
 
     /* The navigation menu links */
+    .sidenav1 a {
+      background-color: #fff !important;
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 17px;
+      color: #14171c !important;
+      display: block;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .sidenav1 a:hover {
+    background-color:   var(--main-hover-blue) !important;
+      text-decoration: none;
+      color: #14171c !important;
+    }
+    /* The sidebar menu */
+    .sidenav {
+      height: 100%; /* Full-height: remove this if you want "auto" height */
+      width: 15%; /* Set the width of the sidebar */
+      position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+      z-index: 1; /* Stay on top */
+      top: 0; /* Stay at the top */
+      left: 0;
+      background-color: #; /* white */
+      overflow-x: hidden; /* Disable horizontal scroll */
+      /* padding-top: 20px; */
+      margin-top:179px;
+    }
+
+    /* The navigation menu links */
     .sidenav a {
-      background-color: #fae3d9 !important;
+      background-color: #fff !important;
       border: 1px solid black;
       border-radius: 10px;
       padding: 6px 8px 6px 16px;
@@ -102,7 +155,40 @@
 
     /* When you mouse over the navigation links, change their color */
     .sidenav a:hover {
-      background-color: #ffb6b9 !important;
+    background-color:   var(--main-hover-blue) !important;
+      text-decoration: none;
+      color: #14171c !important;
+    }
+
+    .rightsidenav {
+      height: 100%; /* Full-height: remove this if you want "auto" height */
+      width: 15%; /* Set the width of the sidebar */
+      position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+      z-index: 1; /* Stay on top */
+      top: 0; /* Stay at the top */
+      left:1 ;
+      background-color:  !important; /* white */
+      overflow-x: hidden; /* Disable horizontal scroll */
+      /* padding-top: 20px; */
+      right: 0px !important;
+      margin-top:81px;
+    }
+
+    /* The navigation menu links */
+    .rightsidenav a {
+      background-color: #fff !important;
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 17px;
+      color: #14171c !important;
+      display: block;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .rightsidenav a:hover {
+    background-color:   var(--main-hover-blue) !important;
       text-decoration: none;
       color: #14171c !important;
     }
@@ -124,8 +210,14 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <link rel="stylesheet" href="css/styles.css">
   <!-- Latest compiled and minified CSS -->
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+$(document).ready(function(){
+  $("#rightsidemenubutton").click(function(){
+    $("#rightsidenav").toggle();
+  });
+});
+</script>
 
 </head>
 

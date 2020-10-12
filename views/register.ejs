@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 <div class="container mt-5">
-  <h1>Register</h1>
+  <h1 style="color:black">Register</h1>
 
   <div class="row">
     <div class="col-sm-8">
@@ -10,7 +10,7 @@
           <!-- Makes POST request to /register route -->
     <form action="/register" method="POST">
 
-  <%- include('partials/msgs') %> 
+  <%- include('partials/msgs') %>
 
     <div class="form-group">
       <label for="username">Name</label>
@@ -26,13 +26,21 @@
     </div>
     <div class="form-group">
       <label for="designation">Designation</label>
-      <input type="text"
-      class="form-control"
-      placeholder="Enter Designation"
-      name="designation"
-      value="<%= typeof designation != 'undefined' ? designation : ''%>"
-      />
-    </div>
+      <div class="wrapper">
+        <select
+        style="width:100%; "
+        text="text"
+        class="form-control"
+        id="status"
+        name="designation"
+        value="">
+          <option  name="status" value="" selected>Select Designation</option>
+          <option  name="status" value="tester">Tester</option>
+          <option  name="status" value="developer">Developer</option>
+          <option  name="status" value="manager">Manager</option>
+        </select>
+      </div>
+</div>
     <div class="form-group">
       <label for="email">Email</label>
       <input
@@ -52,9 +60,10 @@
       name="password"
       />
     </div>
-    <button type="submit" class="btn btn-dark">Register</button>
+    <button type="submit" class="btn btn-success">Register</button>
     <form>
-      <input type="button" class="btn btn-dark" value="Back" onclick="history.back()">
+      <p style="margin-top:15px"> Have Account already ? Login <a href="http://localhost:4000/login">here</a> </p>
+
     </form>
   </form>
 
@@ -62,7 +71,7 @@
       </div>
     </div>
 
-      <%- include('partials/googlebutton') %>
+
 
   </div>
 </div>

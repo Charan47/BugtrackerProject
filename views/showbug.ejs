@@ -3,17 +3,17 @@
 
 <div style="width:70%" class="container-fluid">
 
-  <div class="card">
+  <div style="border:3px solid green" class="card">
     <div class="card-body">
       <form method="post">
         <div class="form-group">
           <%- include('partials/msgs') %>
-          <label class="d-block" for="bugname"> Bug Title </label>
-          <input type="text" class="form-control" name="bugname" id="inputbugname" placeholder="" value="<%= typeof bugobj.nameofthebug != "undefined" ? bugobj.nameofthebug :''%> ">
+          <label class="d-block" for="bugname" > Bug Title </label>
+          <input type="text" class="form-control" name="bugname" id="inputbugname" <%= (currentuser.designation.manager || currentuser.designation.tester)  ? '' : "disabled" %> placeholder="" value="<%= typeof bugobj.nameofthebug != "undefined" ? bugobj.nameofthebug :''%> ">
         </div>
         <div class="form-group">
           <label class="d-block" for="description"> Description</label>
-          <textarea type="text" class="d-block" style="height:200px;width:100%" id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.description != 'undefined' ? bugobj.description : '' %></textarea>
+          <textarea type="text" class="d-block" style="height:200px;width:100%" <%= (currentuser.designation.manager || currentuser.designation.tester)  ? '' : "disabled" %> id=inputdescription class"form-control" name="description" placeholder=""><%= typeof bugobj.description != 'undefined' ? bugobj.description : '' %></textarea>
         </div>
 
         <div class="row">
@@ -23,14 +23,14 @@
               <input style="width:70%" type="text" class="d-inline form-control" readonly="readonly id=" bugid" name="bugid" value="<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>">
             </div>
             <div class="form-group">
-              <% if((currentuser.designation.admin) ||(currentuser.designation.tester)) { %>
-              <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-primary">Save as new</button>
+              <% if((currentuser.designation.manager) ||(currentuser.designation.tester)) { %>
+              <button type="submit" name="action" value="save" formaction="/editbug/0000" class="btn btn-success">Save as new</button>
               <%}%>
               <% if(typeof bugobj._id !='undefined') { %>
-              <button type="submit" name="action" value="update" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">Update</button>
+              <button type="submit" name="action" value="update" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-success">Update</button>
               <%}%>
-              <% if(typeof bugobj._id !='undefined' && (currentuser.designation.admin || currentuser.designation.tester)) { %>
-              <button type="submit" name="action" value="delete" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-primary">Delete</button>
+              <% if(typeof bugobj._id !='undefined' && (currentuser.designation.manager || currentuser.designation.tester)) { %>
+              <button type="submit" name="action" value="delete" formaction="/editbug/<%=typeof bugobj._id !='undefined' ? bugobj._id : ''%>" class="btn btn-success">Delete</button>
               <%}%>
               </div>
           </div>
@@ -46,7 +46,7 @@
               readonly="readonly"
               value="<%=typeof assigneddev !='undefined' ? assigneddev.name : ''%>">
               <%})}%>
-              <% if(currentuser.designation.admin){ %>
+              <% if(currentuser.designation.manager){ %>
               <div class="wrapper">
                 <select
                 style=""
@@ -75,7 +75,7 @@
               id=" bugid"
               value="<%=typeof bugobj.statusofthebug !='undefined' ? bugobj.statusofthebug: ''%>">
 
-              <% if((currentuser.designation.developer) ||(currentuser.designation.admin)) { %>
+              <% if((currentuser.designation.developer) ||(currentuser.designation.manager)) { %>
               <div class="wrapper">
                 <select
                 style="width:70%; "

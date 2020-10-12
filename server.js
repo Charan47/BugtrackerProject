@@ -64,7 +64,7 @@
 	  designation: {
 	    tester: Boolean,
 	    developer: Boolean,
-	    admin: Boolean,
+			manager: Boolean,
 	  },
 		bugsreported: [{
 	    type: mongoose.SchemaTypes.ObjectId,
@@ -81,28 +81,12 @@
 	});
 
 
-	// 	if i had been using passport and passport local
-	//	we had been defining serial and deserialing as
-	//	in passport documentation
-	{
-	  // 	passport.serializeUser(function(user, done) {
-	  //   done(null, user.id);
-	  // });
-	  //
-	  // passport.deserializeUser(function(id, done) {
-	  //   User.findById(id, function (err, user) {
-	  //     done(err, user);
-	  //   });
-	  // });
-	}
 	const usermodel = new mongoose.model("user", userSchema);
 	// creates local strategy from createstrategy
 	// and  also usgin local mongoose to take care of beloew three lines
 	passport.use(usermodel.createStrategy());
 	passport.serializeUser(usermodel.serializeUser());
 	passport.deserializeUser(usermodel.deserializeUser());
-	//adding somebugs to the database
-
 
 	//bugSchema
 	const bugSchema = new mongoose.Schema({
@@ -112,93 +96,17 @@
 	    type: mongoose.SchemaTypes.ObjectId,
 	    ref: 'usermodel'
 	  }],
-	  statusofthebug: String, // not valid (closed), valid to the user, to do ( is only developer) , done , in progress
+	  statusofthebug: String,
 	});
-	//valid to notvalid dev had to update.
 	const bugmodel = new mongoose.model("bug", bugSchema);
-
 	app.get("/", function(req, res) {
 	  res.render("postlogingregister");
 	});
 	app.get("/register", function(req, res) {
 	  res.render("register");
 	});
-
-	{ // register method without local-mongoose
-	  //  app.post("/register", function(req, res) {
-	  //   console.log(req.body);
-	  //   const {
-	  //     name,
-	  //     designation,
-	  //     email,
-	  //     password
-	  //   } = req.body;
-	  //   console.log(email);
-	  //   let errors = [];
-	  //
-	  //   //check required fields
-	  //   if (!name || !designation || !email || !password) {
-	  //     errors.push({
-	  //       msg: 'Please fill in all fields'
-	  //     });
-	  //
-	  //     console.log(errors);
-	  //     res.render("register", {
-	  //       errors,
-	  //       name,
-	  //       designation,
-	  //       email
-	  //     });
-	  //   } else {
-	  //     console.log("checking");
-	  //     usermodel.findOne({
-	  //       email: email
-	  //     }, (function(err, user) {
-	  //       console.log(email + user);
-	  //       if (user) {
-	  //         errors.push({
-	  //           msg: " Email already exists !!"
-	  //         })
-	  //         console.log(errors);
-	  //         res.render('register', {
-	  //           errors,
-	  //           name,
-	  //           designation,
-	  //           email
-	  //         })
-	  //       } else {
-	  //         const newuser = new usermodel({
-	  //           name,
-	  //           designation,
-	  //           email,
-	  //           password,
-	  //         });
-	  //         bcrypt.hash(newuser.password, 10, function(err, hash) {
-	  //           // Store hash in your password DB.
-	  //           if (err) throw err;
-	  //           //set password to hashed
-	  //           newuser.password = hash;
-	  //           //save user
-	  // 					console.log(newuser);
-	  //           newuser.save(function(err) {
-	  //             if (err) {
-	  //               console.log(err);
-	  //             }else{
-	  // 							req.flash('success_msg','You are now registered and login now !!' );
-	  // 							res.redirect('/login');
-	  // 						}
-	  //           });
-	  //
-	  //         });
-	  //       }
-	  //     }));
-	  //   }
-	  //
-	  //   //newuser.save();
-	  //   //res.redirect("/listbugs");
-	  // });
-	}
 	app.post("/register", function(req, res) {
+		console.log(req.body);
 	  const {
 	    name,
 	    designation,
@@ -226,7 +134,7 @@
 	      designation: {
 	        tester: req.body.designation == 'tester' ? true : false,
 	        developer: req.body.designation == 'developer' ? true : false,
-	        admin: req.body.designation == 'admin' ? true : false
+	        manager: req.body.designation == 'manager' ? true : false
 	      }
 	    });
 	    console.log(user);
@@ -248,7 +156,6 @@
 	});
 	//method from passportlocalmongoose
 	// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
-
 	app.get("/login", function(req, res) {
 	  if (req.isAuthenticated()) {
 			res.redirect("/listbugs")
@@ -291,7 +198,7 @@
 	// userlist
 	app.get("/userlist", function(req, res) {
 	  //	res.send("HI");
-		if(req.user.designation.admin){
+		if(req.user.designation.manager){
 	  usermodel.find({}, function(err, userlist) {
 	    if (err) {
 	      console.log("error while finding users");
@@ -304,7 +211,7 @@
 	    };
 	  })
 	}else{
-		req.flash('error_msg', 'No Admin Privileges !!' + req.user.admin);
+		req.flash('error_msg', 'No manager Privileges !!');
 		res.redirect('/listbugs');
 	}
 	})
@@ -319,11 +226,11 @@
 	app.post('/updatedesignation/:userid',(req,res)=>{
 		console.log(req.body);
 		switch (req.body.action) {
-		  case "revokeadmin":
-		    console.log("revokeadmin");
+		  case "revokemanager":
+		    console.log("revokemanager");
 				 usermodel.findByIdAndUpdate(req.params.userid,
 				 	{
-				 		$set :{"designation.admin" : false }
+				 		$set :{"designation.manager" : false }
 				 	},
 				 	(err,doc)=>{
 				 		console.log(doc);
@@ -357,12 +264,12 @@
 					 	});
 				 console.log(req.params.userid);
 		    break;
-		  case "invokeadmin":
+		  case "invokemanager":
 		    // code block
-				 console.log("invokeadmin");
+				 console.log("invokemanager");
 					usermodel.findByIdAndUpdate(req.params.userid,
 						{
-							$set:{"designation.admin" : true}
+							$set:{"designation.manager" : true}
 						},
 						(err,doc)=>{
 							console.log(doc);
@@ -400,18 +307,9 @@
     // code block
 }
 
-
-		// if(req.body.action=='invoke'){
-		// 	console.log();
-		// }else if (req.body.action=='revoke'){
-		// 	console.log();
-		// }
 	})
-	// here isAuthenticated method depends on
-	//1.passport,
-	//2.passport local ,
-	//3.passport local mongoose ,
-	//4.session]
+
+
 	app.post('/deleteaccount/:userid', function(req, res) {
 	  console.log(req.params.userid);
 	  usermodel.findByIdAndRemove(req.params.userid, function(err) {
@@ -419,7 +317,7 @@
 	      console.log("Successfully deleted user by id");
 	    }
 	  })
-	  res.redirect("/userlist");
+	  res.redirect("/settings");
 	});
 	// bug list
 	app.get('/listbugs', function(req, res) {
@@ -447,8 +345,10 @@
 		changetab(req.params.tab);
 	})
 	app.get('/settings', (req, res) => {
-	  if (req.user.designation.admin) {
+	  if (req.user.designation.manager) {
 	    usermodel.find({}, function(err, userlist) {
+				console.log(userlist);
+				console.log(req.user);
 	      res.render("settingspage", {
 	        currentuser: req.user,
 	        userlistobj: userlist
@@ -491,7 +391,7 @@
 	//from the button beside to home button
 	app.get("/addbug", function(req, res) {
 		console.log(req.user);
-	 if (req.user.designation.tester  || req.user.designation.admin){
+	 if (req.user.designation.tester  || req.user.designation.manager){
 			usermodel.find({}, (function(err, users){
 							 res.render("showbug", {
 								 bugobj:{},
@@ -577,25 +477,11 @@
 			res.redirect("/listbugs");
 	};
 })
-	// app.post("/savebug", function(req, res) {
-	// 	console.log(req.body);
-	// 	const{bugname,description,action} = req.body;
-	//
-	//
-	// 	if(action == 'save'){
-	//
-	// 		const bug = new bugmodel({
-	// 			nameofthebug : bugname,
-	// 			description : description,
-	// 			Assignee : user,
-	// 			statusofthebug : "tobe"
-	// 		});
-	// 		console.log(bug.Assignee);
-	// 		bug.save(function(err,savedbug){
-	// 				console.log(savedbug._id);
-	// 		})
-	// 	}
-
+	app.get("/aboutus",(req,res)=>{
+		res.render("aboutus",{
+			currentuser:req.user,
+		});}
+	);
 	app.get('/account/',(req,res)=>{
 		res.render("accountpage",{
 			currentuser:req.user,
@@ -611,22 +497,21 @@
 			// });
 			console.log("here");
 			console.log(req.user.bugsreported);
-			bugmodel.find({ "_id": { $in : req.user.bugsreported } },(err,bugsreported)=>{
+			bugmodel.find({ _id: { $in : req.user.bugsreported } },(err,bugsreported)=>{
 				res.render("accountpage",{
 					currentuser:req.user,
 					buglistobj :bugsreported,
 					title: "Bugs Reported",
-					color : ["#ffb6b9","#fae3d9","#fae3d9"]
+					color : ["#99c6ff","#fff","#fff"]
 				})
 			});
 		}else if (req.params.tab == "bugsassigned"){
-
 			bugmodel.find({ _id: { $in: req.user.bugsassigned } },(err,bugsassigned)=>{
+				console.log(bugsassigned);
 			res.render("accountpage",{
 				currentuser:req.user,
 				buglistobj :bugsassigned,
-				title: "Assinged Bugs",
-				color : ["#fae3d9","#ffb6b9","#fae3d9"]
+				color : ["#fff","#99c6ff","#fff"]
 			})
 		})
 	} else if( req.params.tab == "bugsunassigned"){
@@ -634,58 +519,12 @@
 			res.render("accountpage",{
 				currentuser:req.user,
 				buglistobj :bugsunassigned,
-				title: "Assinged Bugs",
-				color : ["#fae3d9","#fae3d9","#ffb6b9"]
+				color : ["#fff","#fff","#99c6ff"]
 			})
 		})
 	}
 });
-	//const {nameofthebug, description}= req.body;
-	// bug.save(function(err, savedbug) {
-	//   console.log("Bug Info saved and id is " + savedbug._id);
-	// 	res.redirect('/listbugs');
-	// });
 
-	// });
-	// bug.find({},function(err,bugs)){
-	// 	if(err){
-	// 		console.log("logged error finding bugs");
-	// 	}else{
-	// 	}
-	// }
-	// app.get('/showbug/:bugid'.function(res,req){
-	// bug.findById(req.params.bugid,function(err,bugObj)){
-	// 	if(err){
-	// 		console.log(err);
-	// 	}else{
-	// 		res.render("/showbug",{bugobj:bugObj}) // for adding a new bug user is redirected to this again with blank page
-	// 	}
-	// }
-	// });
-	// app.post('/savebug'.function(res,req){
-	//
-	// });
-	// app.get('/deletebug'.function(res,req){
-	//
-	// });
 	app.listen(4000, function() {
 	  console.log("Server has started at 4000");
 	});
-
-
-	//	const app	= express ();
-	//
-	//	app.get("/userlist", function(req,res){
-	//		res.sendFile(__dirname/Homepage.html);
-	//		console.log("__dirname");
-	//	});
-	//
-	//	app.post("/adduser", function(req,res){
-	//
-	//
-	//	});
-	//
-	//	app.listen(3000,function(){
-	//		console.log("Server has started at 3000");
-	//	});
-	//
