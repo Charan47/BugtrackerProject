@@ -42,12 +42,24 @@
 		next();
 	}
 	//connecting to the database user and also contain bug db
+	// function connect() {
+	// 	return new Promise((resolve,reject)=>{
 	mongoose.connect("mongodb://localhost:27017/userdb", {
 	  useNewUrlParser: true,
 	  useUnifiedTopology: true,
 	  useCreateIndex: true,
-		useFindAndModify: false
-	});
+		useFindAndModify: false})
+// 	}).then((res,err)=>{
+// 		if(err) return reject(err);
+// 		resolve();
+// 		})
+// 	})
+//
+// function close()
+// {
+//  mongoose.disconnect();
+// }
+// module.exports = {connect,close};
 	//connect flash
 	app.use(flash());
 	//Global Var for "flash"
@@ -84,7 +96,7 @@
 	// 	if i had been using passport and passport local
 	//	we had been defining serial and deserialing as
 	//	in passport documentation
-	{
+//	{
 	  // 	passport.serializeUser(function(user, done) {
 	  //   done(null, user.id);
 	  // });
@@ -94,7 +106,7 @@
 	  //     done(err, user);
 	  //   });
 	  // });
-	}
+//	}
 	const usermodel = new mongoose.model("user", userSchema);
 	// creates local strategy from createstrategy
 	// and  also usgin local mongoose to take care of beloew three lines
@@ -668,7 +680,7 @@
 	// app.get('/deletebug'.function(res,req){
 	//
 	// });
-	app.listen(4000, function() {
+	var server =app.listen(4000, function() {
 	  console.log("Server has started at 4000");
 	});
 
@@ -689,3 +701,4 @@
 	//		console.log("Server has started at 3000");
 	//	});
 	//
+ module.exports = server ;
