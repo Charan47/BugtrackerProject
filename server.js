@@ -13,7 +13,8 @@
 	const bcrypt = require("bcrypt");
 	const flash = require("connect-flash")
 	const app = express();
-
+	const joi = require("joi");
+	const basicAuth = require('express-basic-auth');
 
 
 	// EJS
@@ -35,12 +36,12 @@
 	app.use(passport.initialize());
 	app.use(passport.session());
 
-	function authenticate(req, res, next) {
-	  if (!req.isAuthenticated()) {
-	    res.render("login");
-	  };
-	  next();
-	}
+	// function authenticate(req, res, next) {
+	//   if (!req.isAuthenticated()) {
+	//     res.render("login");
+	//   };
+	//   next();
+	// }
 	//connecting to the database user and also contain bug db
 	mongoose.connect("mongodb://localhost:27017/userdb", {
 	  useNewUrlParser: true,
@@ -156,6 +157,9 @@
 	});
 	//method from passportlocalmongoose
 	// why and how from https://www.geeksforgeeks.org/nodejs-authentication-using-passportjs-and-passport-local-mongoose/
+
+
+
 	app.get("/login", function(req, res) {
 	  if (req.isAuthenticated()) {
 	    res.redirect("/listbugs")
@@ -164,6 +168,8 @@
 	  }
 
 	});
+
+
 	app.post("/login", function(req, res, next) {
 	  passport.authenticate('local', function(err, user, info) {
 	    if (err) {
@@ -186,16 +192,47 @@
 	  req.logout();
 	  res.redirect('/');
 	});
+	app.get("/api/bugs/",(req,res)=>{
+		app.use(basicAuth({
+				users: {
+						'admin': 'admin'
+				}
+		}),express.json());
+		bugmodel.find({},{__v:0,assignee:0}, function(err, buglist) {
+	    if (err) {
+				res.send(err)
+			}else{
+				res.send(buglist);
+			}
+	  })
 
+	});
+	app.get("/api/bugs/:bugid",(req,res)=>{
+		app.use(basicAuth({
+				users: {
+						'admin': 'admin'
+				}
+		}),express.json());
+		bugmodel.find({_id:req.params.bugid},{_id:0,__v:0,assignee:0}, function(err, buglist) {
+	    if (err) {
+				res.send(err)
+			}else{
+				res.send(buglist);
+			}
+	  })
+
+	});
 	// authenticate all routes from below
 	app.use((req, res, next) => {
 	  if (req.isAuthenticated()) {
+
 	    next();
 	  } else {
 	    res.status(401),
 	      res.render('login');
 	  }
 	});
+
 	// userlist
 	app.get("/userlist", function(req, res) {
 	  //	res.send("HI");
@@ -373,11 +410,11 @@
 
 	// showing bug in detail version
 	app.get('/showbug/:bugid', function(req, res) {
-
+		//find all the developers
 	  usermodel.find({
 	    "designation.developer": true
 	  }, (err, users) => {
-	    bugmodel.findById(req.params.bugid, function(err, bugobj) {
+	    bugmodel.findById(req.params.bugid, function(err, bugobj) { //find the requested the bug
 	      usermodel.find({
 	        '_id': {
 	          $in: bugobj.assignee
@@ -410,7 +447,7 @@
 	      res.render("showbug", {
 	        bugobj: {},
 	        devs: users,
-	        assingeddev: '',
+	        assigneddev: '',
 	        currentuser: req.user,
 	      });
 
