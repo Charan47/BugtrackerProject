@@ -1,30 +1,26 @@
-<nav class="navbar navbar-expand-lg navbar-light ">
-  <a class="rounded-0 navbar-brand noHover" href="#">Bug Tracker</a>
-<div class="container-fluid">
-    <ul class="nav navbar-nav navbar-right">
-    </ul>
+<nav class="navbar navbar-light navbar-light ">
+  <div class="row container-fluid">
+    <div class="col-4">
+        <img style="margin:5px" height="60vw " width="60vw" src="/logo.png" alt="logo">
+        <a class="rounded-0 navbar-brand noHover align-start " href="#">Bug Tracker</a>
+    </div>
+    <div class="col-6 ">
+      <div class="d-flex justify-content-end">
+        <a class="" href="/listbugs">Home </a>
 
-    <ul class="nav navbar-nav navbar-right">
-      <li style="padding-top:8px ;">
-        <a class="nav-link" href="/listbugs">Home </a>
-      </li>
+        <a class="" href="/aboutus">About us</a>
 
-      <li style="padding-top:8px ;">
-        <a class="nav-link" href="/aboutus">About us</a>
-      </li>
-      <li style="padding:0px"class="nav-item dropdown">
-        <a class="nav-link" href="#" id="rightsidemenubutton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="" href="#" id="rightsidemenubutton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <img height="50vw" width="50vw" src="/settingsicon.png" alt="Settings">
         </a>
-      </li>
+      </div>
+    </div>
+  </div>
 
-    </ul>
-
-</div>
 
 </nav>
 
-<div id="rightsidenav"class="rightsidenav" style="display:none">
+<div id="rightsidenav" class="rightsidenav" style="display:none">
   <a class="dropdown-item" href="/account/<%if(currentuser.designation.manager){%>bugsunassigned<%}else if(currentuser.designation.tester){%>bugsreported<%}else{%>bugsassigned<%}%> ">Account</a>
           <!-- userlist option -->
   <a class="" href="/settings">Settings</a>
