@@ -38,14 +38,15 @@
             <div class="form-group">
               <label class="d-block" for="assignee"> Assignee</label>
               <% if (typeof assigneddev != 'undefined'){
-              assigneddev.forEach((assigneddev,i)=>{ %>
+
+              for (i=0 ; i < assigneddev.length ;i++){ %>
               <input
               style="width:80%"
               type="text"
               class="d-inline form-control"
               readonly="readonly"
-              value="<%=typeof assigneddev !='undefined' ? assigneddev.name : ''%>">
-              <%})}%>
+              value="<%=typeof assigneddev[i] !='undefined' ? assigneddev[i].name : ''%>">
+              <%}}%>
               <% if(currentuser.designation.manager){ %>
               <div class="wrapper">
                 <select
@@ -84,9 +85,9 @@
                 id="status"
                 name="statusofthebug"
                 value="">
-                  <option  name="status" value="Awaiting Validation" selected> </option>
+                  <option  name="status" selected value="<%=typeof bugobj.statusofthebug !='undefined' ? bugobj.statusofthebug : 'Awaiting Validation'%>" > </option>
                   <option  name="status" value="Awaiting Validation" > Awaiting Validation</option>
-                  <option  name="status" value="Valid"> Valid</option>
+          
                   <option  name="status" value="Invalid"> Invalid</option>
                   <option  name="status" value="In Progress"> In Process</option>
                   <option  name="status" value="To Be Done"> To be done</option>

@@ -171,7 +171,13 @@
 
 
 	app.post("/login", function(req, res, next) {
-	  passport.authenticate('local', function(err, user, info) {
+
+		if (!req.body.email || !req.body.password) {
+			req.flash('error_msg', 'Fill all Fields to login');
+			res.redirect('/login');
+
+	  } else {
+			passport.authenticate('local', function(err, user, info) {
 	    if (err) {
 	      return next(err);
 	    }
@@ -186,7 +192,7 @@
 	      }
 	      return res.redirect('/listbugs');
 	    });
-	  })(req, res, next);
+	  })(req, res, next);}
 	});
 	app.get("/logout", function(req, res) {
 	  req.logout();
@@ -229,7 +235,7 @@
 	    next();
 	  } else {
 	    res.status(401),
-	      res.render('login');
+	      res.redirect('/login');
 	  }
 	});
 
@@ -443,7 +449,9 @@
 	app.get("/addbug", function(req, res) {
 	  console.log(req.user);
 	  if (req.user.designation.tester || req.user.designation.manager) {
-	    usermodel.find({}, (function(err, users) {
+	    usermodel.find({
+		    "designation.developer": true
+		  }, (function(err, users) {
 	      res.render("showbug", {
 	        bugobj: {},
 	        devs: users,
@@ -465,7 +473,7 @@
 	    const bug = new bugmodel({
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
-	      statusofthebug: "to be validated" //new bug status is always to be
+	      statusofthebug: "Awaiting Validation" //new bug status is always to be
 	    });
 	    bug.save(function(err, savedbug) {
 	      console.log(savedbug);
@@ -581,8 +589,9 @@
 	    })
 	  } else if (req.params.tab == "bugsunassigned") {
 	    bugmodel.find({
-	      assignee: null
+	      assignee: []
 	    }, (err, bugsunassigned) => {
+				console.log(bugsunassigned);
 	      res.render("accountpage", {
 	        currentuser: req.user,
 	        buglistobj: bugsunassigned,
@@ -593,7 +602,7 @@
 	});
 
 	app.get('*', function(req, res) {
-	  res.status(404).send('notfound');
+	  res.status(404).send('404 page not found  !!!! ');
 	});
 	app.listen(4000, function() {
 	  console.log("Server has started at 4000");
