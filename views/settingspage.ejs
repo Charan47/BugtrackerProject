@@ -13,7 +13,7 @@
 
             <dt class="col-sm-4">Designation</dt>
             <dd class="col-sm-8">
-              <p><%= currentuser.designation.manager ? "Manager" : '.' %> <%= currentuser.designation.developer ? "Developer" : '.'%> <%= currentuser.designation.tester ? "Tester" : '.'%> </p>
+              <p><%= currentuser.designation.manager ? "Manager" : ' ' %> <%= currentuser.designation.developer ? "Developer" : ' '%> <%= currentuser.designation.tester ? "Tester" : ' '%> </p>
             </dd>
 
             <dt class="col-sm-4">Report</dt>
@@ -83,7 +83,7 @@
 
                                 <dt class="col-sm-4">Designation</dt>
                                 <dd class="col-sm-8">
-                                  <p><%= userlistobj[i].designation.manager ? "manager" : '' %><%= userlistobj[i].designation.developer ? "Developer" : ''%><%= userlistobj[i].designation.tester ? "Tester" : ''%> </p>
+                                  <p><%= userlistobj[i].designation.manager ? "Manager " : ' ' %><%= userlistobj[i].designation.developer ? "Developer " : ' '%><%= userlistobj[i].designation.tester ? "Tester" : ' '%> </p>
                                   <p> </p>
                                 </dd>
 
