@@ -235,7 +235,7 @@
 	    next();
 	  } else {
 	    res.status(401),
-	      res.render('login');
+	      res.redirect('/login');
 	  }
 	});
 
@@ -473,7 +473,7 @@
 	    const bug = new bugmodel({
 	      nameofthebug: req.body.bugname,
 	      description: req.body.description,
-	      statusofthebug: "Awaiting validation" //new bug status is always to be
+	      statusofthebug: "Awaiting Validation" //new bug status is always to be
 	    });
 	    bug.save(function(err, savedbug) {
 	      console.log(savedbug);
@@ -602,7 +602,7 @@
 	});
 
 	app.get('*', function(req, res) {
-	  res.status(404).send('notfound');
+	  res.status(404).send('404 page not found  !!!! ');
 	});
 	app.listen(4000, function() {
 	  console.log("Server has started at 4000");
